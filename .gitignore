@@ -1,0 +1,11 @@
+# Ignore sensitive data
+*.pdf
+*.txt
+*.html
+
+# Python
+__pycache__/
+*.pyc
+
+# System
+.DS_Store
