@@ -1,0 +1,2142 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Viagem - Brasil 25/26</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f4f9; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        .summary { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+        .card { background: #eee; padding: 15px; border-radius: 5px; flex: 1; text-align: center; min-width: 150px; position: relative; transition: all 0.2s; }
+        .card h3 { margin: 0; color: #555; font-size: 0.9em; }
+        .card p { margin: 5px 0 0; font-size: 1.5em; font-weight: bold; color: #2c3e50; }
+        .card.highlight { background-color: #fcf3cf; border: 1px solid #f1c40f; }
+        .card.highlight p { color: #d35400; }
+        
+        /* Clickable Invoice Cards */
+        .clickable-card { cursor: pointer; border-left: 5px solid #3498db; background-color: #eaf2f8; }
+        .clickable-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        
+        /* Paid State */
+        .clickable-card.paid { background-color: #d5dbdb; border-left-color: #7f8c8d; opacity: 0.8; }
+        .clickable-card.paid h3, .clickable-card.paid p { text-decoration: line-through; color: #7f8c8d; }
+        .clickable-card.paid .status-text { color: #27ae60; font-weight: bold; text-decoration: none; }
+        .clickable-card .check-icon { display: none; position: absolute; top: 10px; right: 10px; color: #27ae60; font-weight: bold; font-size: 1.2em; }
+        .clickable-card.paid .check-icon { display: block; }
+        .status-text { display: block; margin-top: 5px; font-size: 0.8em; color: #e74c3c; }
+        .clickable-card.paid .status-text { color: #27ae60; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #2c3e50; color: white; cursor: pointer; user-select: none; }
+        th:hover { background-color: #34495e; }
+        tr:hover { background-color: #f1f1f1; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; color: white; }
+        .Pix { background-color: #27ae60; }
+        .Debito { background-color: #2980b9; }
+        .Credito { background-color: #e67e22; }
+        .Pagamento-Fatura { background-color: #7f8c8d; }
+        .btn { display: inline-block; padding: 10px 20px; background-color: #3498db; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin-bottom: 20px; }
+        .btn:hover { background-color: #2980b9; }
+        
+        .controls { background: #e8f6f3; padding: 15px; border-radius: 5px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; border: 1px solid #1abc9c; flex-wrap: wrap; }
+        .controls label { font-weight: bold; color: #16a085; }
+        .controls input, .controls select { padding: 5px; border: 1px solid #ddd; border-radius: 3px; }
+        .currency-toggle { background-color: #16a085; color: white; border: none; padding: 8px 15px; border-radius: 3px; cursor: pointer; font-weight: bold; }
+        .currency-toggle:hover { background-color: #1abc9c; }
+        
+        .filters input { width: 200px; }
+        
+        .section-title { border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px; color: #7f8c8d; font-size: 1.1em; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <h1>Gastos da Viagem</h1>
+        <a href="relatorio_futuro.html" class="btn">Ver Detalhes Futuros</a>
+    </div>
+
+    <div class="controls">
+        <label for="exchange-rate">Cotação (1 CAD = R$):</label>
+        <input type="number" id="exchange-rate" value="4.20" step="0.01" onchange="updateRate()">
+        <button class="currency-toggle" onclick="toggleCurrency()" id="btn-currency">Ver em CAD</button>
+    </div>
+    
+    <h3 class="section-title">Resumo Financeiro</h3>
+    <div class="summary">
+        <div class="card">
+            <h3>Pix (Pago)</h3>
+            <p id="total-pix">R$ 0,00</p>
+        </div>
+        <div class="card">
+            <h3>Débito (Pago)</h3>
+            <p id="total-debito">R$ 0,00</p>
+        </div>
+        <div class="card highlight">
+            <h3>Total Comprometido (Full)</h3>
+            <p id="total-comprometido">R$ 0,00</p>
+        </div>
+    </div>
+    
+    <h3 class="section-title">Próximos Vencimentos (Cartão de Crédito)</h3>
+    <p style="font-size:0.9em; color:#7f8c8d; margin-top:-10px; margin-bottom:15px;">Clique no cartão para marcar como pago.</p>
+    <div class="summary">
+        
+    <div class="card clickable-card" id="invoice-2026-1" onclick="togglePaid(this)">
+        <div class="check-icon">✓</div>
+        <h3>Fatura Jan/2026</h3>
+        <p class="money" data-val="3720.51">R$ 3.720,51</p>
+        <small class="status-text">Aberto</small>
+    </div>
+    
+    <div class="card clickable-card" id="invoice-2026-2" onclick="togglePaid(this)">
+        <div class="check-icon">✓</div>
+        <h3>Fatura Fev/2026</h3>
+        <p class="money" data-val="8945.650000000001">R$ 8.945,65</p>
+        <small class="status-text">Aberto</small>
+    </div>
+    
+    <div class="card clickable-card" id="invoice-2026-3" onclick="togglePaid(this)">
+        <div class="check-icon">✓</div>
+        <h3>Fatura Mar/2026</h3>
+        <p class="money" data-val="6362.339999999999">R$ 6.362,34</p>
+        <small class="status-text">Aberto</small>
+    </div>
+    
+    <div class="card clickable-card" id="invoice-2026-4" onclick="togglePaid(this)">
+        <div class="check-icon">✓</div>
+        <h3>Fatura Abr/2026</h3>
+        <p class="money" data-val="4645.7">R$ 4.645,70</p>
+        <small class="status-text">Aberto</small>
+    </div>
+    
+    <div class="card clickable-card" id="invoice-2026-5" onclick="togglePaid(this)">
+        <div class="check-icon">✓</div>
+        <h3>Fatura Mai/2026</h3>
+        <p class="money" data-val="202.5">R$ 202,50</p>
+        <small class="status-text">Aberto</small>
+    </div>
+    
+    </div>
+
+    <h3 class="section-title">Extrato da Viagem</h3>
+    <div class="controls filters">
+        <label>Filtros:</label>
+        <input type="text" id="search-desc" placeholder="Buscar descrição..." oninput="renderTable()">
+        <select id="filter-type" onchange="renderTable()">
+            <option value="all">Todos os Tipos</option>
+            <option value="Pix">Pix</option>
+            <option value="Debito">Débito</option>
+            <option value="Credito">Crédito</option>
+        </select>
+        <label><input type="checkbox" id="toggle-fatura" onchange="renderTable()"> Ver Faturas Pagas</label>
+    </div>
+
+    <table id="expenses-table">
+        <thead>
+            <tr>
+                <th onclick="sortTable('date')">Data &#8693;</th>
+                <th onclick="sortTable('description')">Descrição &#8693;</th>
+                <th onclick="sortTable('type')">Tipo &#8693;</th>
+                <th onclick="sortTable('status')">Status &#8693;</th>
+                <th onclick="sortTable('value')">Valor Parcela &#8693;</th>
+                <th onclick="sortTable('total_purchase_value')">Valor Total (Compra) &#8693;</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+    const transactions = [
+  {
+    "date": "2025-12-26",
+    "display_date": "26/12/2025",
+    "description": "221                 DEB.PARCELAS SUBSC./INTEGR.",
+    "value": 20.0,
+    "total_purchase_value": 20.0,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "26/12   221                 DEB.PARCELAS SUBSC./INTEGR.                                                        R$ 20,00D"
+  },
+  {
+    "date": "2025-12-26",
+    "display_date": "26/12/2025",
+    "description": "Pix                 PIX EMITIDO OUTRA IF",
+    "value": 25.0,
+    "total_purchase_value": 25.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "26/12   Pix                 PIX EMITIDO OUTRA IF                                                               R$ 25,00D"
+  },
+  {
+    "date": "2025-12-26",
+    "display_date": "26/12/2025",
+    "description": "Pix                 PIX EMITIDO OUTRA IF",
+    "value": 30.0,
+    "total_purchase_value": 30.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "26/12   Pix                 PIX EMITIDO OUTRA IF                                                               R$ 30,00D"
+  },
+  {
+    "date": "2025-12-26",
+    "display_date": "26/12/2025",
+    "description": "CHURRASQUINHO SKEMA            ANAPOLIS",
+    "value": 84.33,
+    "total_purchase_value": 84.33,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "26/12        CHURRASQUINHO SKEMA            ANAPOLIS                                                            84,33"
+  },
+  {
+    "date": "2025-12-26",
+    "display_date": "26/12/2025",
+    "description": "FOOD ITALIA AEROPORT         GUARULHOS",
+    "value": 172.0,
+    "total_purchase_value": 172.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "26/12        FOOD ITALIA AEROPORT         GUARULHOS                                                            172,00"
+  },
+  {
+    "date": "2025-12-27",
+    "display_date": "27/12/2025",
+    "description": "TOKIO CABELEIREIRO L        ANAPOLIS",
+    "value": 180.0,
+    "total_purchase_value": 180.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "27/12        TOKIO CABELEIREIRO L        ANAPOLIS                                                              180,00"
+  },
+  {
+    "date": "2025-12-27",
+    "display_date": "27/12/2025",
+    "description": "JERIVA            ABADIANIA",
+    "value": 75.55,
+    "total_purchase_value": 75.55,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "27/12        JERIVA            ABADIANIA                                                                        75,55"
+  },
+  {
+    "date": "2025-12-28",
+    "display_date": "28/12/2025",
+    "description": "MaderoCtnRoute60       ABADIANIA",
+    "value": 122.0,
+    "total_purchase_value": 122.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "28/12        MaderoCtnRoute60       ABADIANIA                                                                  122,00"
+  },
+  {
+    "date": "2025-12-28",
+    "display_date": "28/12/2025",
+    "description": "MCDONALDS              BRASILIA",
+    "value": 101.8,
+    "total_purchase_value": 101.8,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "28/12        MCDONALDS              BRASILIA                                                                   101,80"
+  },
+  {
+    "date": "2025-12-29",
+    "display_date": "29/12/2025",
+    "description": "Pix                 PIX EMITIDO OUTRA IF",
+    "value": 20.0,
+    "total_purchase_value": 20.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "29/12   Pix                 PIX EMITIDO OUTRA IF                                                               R$ 20,00D"
+  },
+  {
+    "date": "2025-12-29",
+    "display_date": "29/12/2025",
+    "description": "20150626            D\u00c9B.TRANSF.CONTAS DIF.TIT. INTERCREDIS",
+    "value": 50.31,
+    "total_purchase_value": 50.31,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "29/12   20150626            D\u00c9B.TRANSF.CONTAS DIF.TIT. INTERCREDIS                                             R$ 50,31D"
+  },
+  {
+    "date": "2025-12-29",
+    "display_date": "29/12/2025",
+    "description": "Pix                 PIX EMITIDO OUTRA IF",
+    "value": 4.0,
+    "total_purchase_value": 4.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "29/12   Pix                 PIX EMITIDO OUTRA IF                                                                R$ 4,00D"
+  },
+  {
+    "date": "2025-12-29",
+    "display_date": "29/12/2025",
+    "description": "PANIFICADORA ARTE TR        Anapolis",
+    "value": 14.99,
+    "total_purchase_value": 14.99,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "29/12        PANIFICADORA ARTE TR        Anapolis                                                               14,99"
+  },
+  {
+    "date": "2025-12-29",
+    "display_date": "29/12/2025",
+    "description": "PAMONHARIA DO OLIVER          ANAPOLIS",
+    "value": 59.74,
+    "total_purchase_value": 59.74,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "29/12        PAMONHARIA DO OLIVER          ANAPOLIS                                                             59,74"
+  },
+  {
+    "date": "2025-12-29",
+    "display_date": "29/12/2025",
+    "description": "PAMONHARIA DO OLIVER          ANAPOLIS",
+    "value": 6.0,
+    "total_purchase_value": 6.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "29/12        PAMONHARIA DO OLIVER          ANAPOLIS                                                              6,00"
+  },
+  {
+    "date": "2025-12-30",
+    "display_date": "30/12/2025",
+    "description": "AUTO POSTO CERRADO 0         ANAPOLIS",
+    "value": 100.0,
+    "total_purchase_value": 100.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "30/12        AUTO POSTO CERRADO 0         ANAPOLIS                                                             100,00"
+  },
+  {
+    "date": "2025-12-30",
+    "display_date": "30/12/2025",
+    "description": "FULO DO CERRADO           ANAPOLIS",
+    "value": 142.0,
+    "total_purchase_value": 142.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "30/12        FULO DO CERRADO           ANAPOLIS                                                                142,00"
+  },
+  {
+    "date": "2025-12-31",
+    "display_date": "31/12/2025",
+    "description": "5024003736          D\u00c9B.SEGURO PRESTAMISTA",
+    "value": 17.5,
+    "total_purchase_value": 17.5,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "31/12   5024003736          D\u00c9B.SEGURO PRESTAMISTA                                                             R$ 17,50D"
+  },
+  {
+    "date": "2025-12-31",
+    "display_date": "31/12/2025",
+    "description": "SEMPRE MAIS SUPERMER          ABADIANIA",
+    "value": 206.22,
+    "total_purchase_value": 206.22,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "31/12        SEMPRE MAIS SUPERMER          ABADIANIA                                                           206,22"
+  },
+  {
+    "date": "2025-12-31",
+    "display_date": "31/12/2025",
+    "description": "DROGARIA NOSSA SENHO          ABADIANIA",
+    "value": 50.0,
+    "total_purchase_value": 50.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "31/12        DROGARIA NOSSA SENHO          ABADIANIA                                                            50,00"
+  },
+  {
+    "date": "2026-01-02",
+    "display_date": "02/01/2026",
+    "description": "IOF/2-1               D\u00c9B.IOF",
+    "value": 3.99,
+    "total_purchase_value": 3.99,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "02/01   IOF/2-1               D\u00c9B.IOF                                  R$ 3,99D"
+  },
+  {
+    "date": "2026-01-02",
+    "display_date": "02/01/2026",
+    "description": "IOF/2-1               D\u00c9B.IOF",
+    "value": 0.43,
+    "total_purchase_value": 0.43,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "02/01   IOF/2-1               D\u00c9B.IOF                                  R$ 0,43D"
+  },
+  {
+    "date": "2026-01-02",
+    "display_date": "02/01/2026",
+    "description": "053911                COMPRA MASTERCARD MAESTRO",
+    "value": 7.4,
+    "total_purchase_value": 7.4,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "02/01   053911                COMPRA MASTERCARD MAESTRO                R$ 7,40D"
+  },
+  {
+    "date": "2026-01-02",
+    "display_date": "02/01/2026",
+    "description": "Pix                   PIX EMITIDO OUTRA IF",
+    "value": 121.97,
+    "total_purchase_value": 121.97,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "02/01   Pix                   PIX EMITIDO OUTRA IF                   R$ 121,97D"
+  },
+  {
+    "date": "2026-01-02",
+    "display_date": "02/01/2026",
+    "description": "Pix                   PIX EMITIDO OUTRA IF",
+    "value": 80.5,
+    "total_purchase_value": 80.5,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "02/01   Pix                   PIX EMITIDO OUTRA IF                    R$ 80,50D"
+  },
+  {
+    "date": "2026-01-02",
+    "display_date": "02/01/2026",
+    "description": "ONCELL              ALEXANIA",
+    "value": 120.0,
+    "total_purchase_value": 120.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "02/01        ONCELL              ALEXANIA                                                                      120,00"
+  },
+  {
+    "date": "2026-01-02",
+    "display_date": "02/01/2026",
+    "description": "LEVIS             ALEXANIA",
+    "value": 468.86,
+    "total_purchase_value": 468.86,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "02/01        LEVIS             ALEXANIA                                                                        468,86"
+  },
+  {
+    "date": "2026-01-02",
+    "display_date": "02/01/2026",
+    "description": "I PARK ESTACIONAMENT         ALEXANIA",
+    "value": 19.0,
+    "total_purchase_value": 19.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "02/01        I PARK ESTACIONAMENT         ALEXANIA                                                              19,00"
+  },
+  {
+    "date": "2026-01-02",
+    "display_date": "02/01/2026",
+    "description": "ALJ COMERCIO            ALEXANIA",
+    "value": 48.0,
+    "total_purchase_value": 48.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "02/01        ALJ COMERCIO            ALEXANIA                                                                   48,00"
+  },
+  {
+    "date": "2026-01-02",
+    "display_date": "02/01/2026",
+    "description": "USA OUTLET        01/03 SIMOLANDIA",
+    "value": 166.66,
+    "total_purchase_value": 499.98,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "02/01        USA OUTLET        01/03 SIMOLANDIA                                                                166,66"
+  },
+  {
+    "date": "2026-01-04",
+    "display_date": "04/01/2026",
+    "description": "SEMPRE MAIS SUPERMER          ABADIANIA",
+    "value": 99.22,
+    "total_purchase_value": 99.22,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "04/01        SEMPRE MAIS SUPERMER          ABADIANIA                                                            99,22"
+  },
+  {
+    "date": "2026-01-04",
+    "display_date": "04/01/2026",
+    "description": "JERIVA            ABADIANIA",
+    "value": 57.87,
+    "total_purchase_value": 57.87,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "04/01        JERIVA            ABADIANIA                                                                        57,87"
+  },
+  {
+    "date": "2026-01-05",
+    "display_date": "05/01/2026",
+    "description": "LC-202512       JUROS CHEQUE ESPECIAL",
+    "value": 14.0,
+    "total_purchase_value": 14.0,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "05/01   LC-202512       JUROS CHEQUE ESPECIAL                                                                R$ 14,00D"
+  },
+  {
+    "date": "2026-01-05",
+    "display_date": "05/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 200.0,
+    "total_purchase_value": 200.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "05/01   Pix             PIX EMITIDO OUTRA IF                                                                R$ 200,00D"
+  },
+  {
+    "date": "2026-01-05",
+    "display_date": "05/01/2026",
+    "description": "788299          COMPRA MASTERCARD MAESTRO",
+    "value": 5.4,
+    "total_purchase_value": 5.4,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "05/01   788299          COMPRA MASTERCARD MAESTRO                                                             R$ 5,40D"
+  },
+  {
+    "date": "2026-01-05",
+    "display_date": "05/01/2026",
+    "description": "699944          COMPRA MASTERCARD MAESTRO",
+    "value": 5.4,
+    "total_purchase_value": 5.4,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "05/01   699944          COMPRA MASTERCARD MAESTRO                                                             R$ 5,40D"
+  },
+  {
+    "date": "2026-01-05",
+    "display_date": "05/01/2026",
+    "description": "Pix                   PIX EMITIDO OUTRA IF",
+    "value": 330.0,
+    "total_purchase_value": 330.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "05/01   Pix                   PIX EMITIDO OUTRA IF                   R$ 330,00D"
+  },
+  {
+    "date": "2026-01-05",
+    "display_date": "05/01/2026",
+    "description": "HNA*OBOTICARIO            ANAPOLIS",
+    "value": 92.8,
+    "total_purchase_value": 92.8,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "05/01        HNA*OBOTICARIO            ANAPOLIS                                                                 92,80"
+  },
+  {
+    "date": "2026-01-05",
+    "display_date": "05/01/2026",
+    "description": "BRASIL PARK PARTICIP       ANAPOLIS",
+    "value": 8.0,
+    "total_purchase_value": 8.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "05/01        BRASIL PARK PARTICIP       ANAPOLIS                                                                 8,00"
+  },
+  {
+    "date": "2026-01-05",
+    "display_date": "05/01/2026",
+    "description": "AUTO POSTO CERRADO           ANAPOLIS",
+    "value": 143.44,
+    "total_purchase_value": 143.44,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "05/01        AUTO POSTO CERRADO           ANAPOLIS                                                             143,44"
+  },
+  {
+    "date": "2026-01-05",
+    "display_date": "05/01/2026",
+    "description": "XICO BARU             ANAPOLIS",
+    "value": 159.28,
+    "total_purchase_value": 159.28,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "05/01        XICO BARU             ANAPOLIS                                                                    159,28"
+  },
+  {
+    "date": "2026-01-06",
+    "display_date": "06/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 100.0,
+    "total_purchase_value": 100.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "06/01   Pix             PIX EMITIDO OUTRA IF                                                                R$ 100,00D"
+  },
+  {
+    "date": "2026-01-06",
+    "display_date": "06/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 176.34,
+    "total_purchase_value": 176.34,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "06/01   Pix             PIX EMITIDO OUTRA IF                                                                R$ 176,34D"
+  },
+  {
+    "date": "2026-01-06",
+    "display_date": "06/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 139.0,
+    "total_purchase_value": 139.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "06/01   Pix             PIX EMITIDO OUTRA IF                                                                R$ 139,00D"
+  },
+  {
+    "date": "2026-01-06",
+    "display_date": "06/01/2026",
+    "description": "TrilhasDaAmazonia      ANAPOLIS",
+    "value": 9.11,
+    "total_purchase_value": 9.11,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "06/01        TrilhasDaAmazonia      ANAPOLIS                                                                     9,11"
+  },
+  {
+    "date": "2026-01-06",
+    "display_date": "06/01/2026",
+    "description": "BRASIL PARK PARTICIP       ANAPOLIS",
+    "value": 12.0,
+    "total_purchase_value": 12.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "06/01        BRASIL PARK PARTICIP       ANAPOLIS                                                                12,00"
+  },
+  {
+    "date": "2026-01-06",
+    "display_date": "06/01/2026",
+    "description": "LIRIO COSMETICOS          GOIANIA",
+    "value": 338.0,
+    "total_purchase_value": 338.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "06/01        LIRIO COSMETICOS          GOIANIA                                                                 338,00"
+  },
+  {
+    "date": "2026-01-06",
+    "display_date": "06/01/2026",
+    "description": "FON PIN            ANAPOLIS",
+    "value": 62.39,
+    "total_purchase_value": 62.39,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "06/01        FON PIN            ANAPOLIS                                                                        62,39"
+  },
+  {
+    "date": "2026-01-06",
+    "display_date": "06/01/2026",
+    "description": "ZP*MICHELLI ALVES FR        ANAPOLIS",
+    "value": 82.55,
+    "total_purchase_value": 82.55,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "06/01        ZP*MICHELLI ALVES FR        ANAPOLIS                                                               82,55"
+  },
+  {
+    "date": "2026-01-06",
+    "display_date": "06/01/2026",
+    "description": "JIM.COM* O CAIPIRA P      Anapolis",
+    "value": 24.2,
+    "total_purchase_value": 24.2,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "06/01        JIM.COM* O CAIPIRA P      Anapolis                                                                 24,20"
+  },
+  {
+    "date": "2026-01-06",
+    "display_date": "06/01/2026",
+    "description": "ANDA BELLA        01/03 ANAPOLIS",
+    "value": 126.66,
+    "total_purchase_value": 379.98,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "06/01        ANDA BELLA        01/03 ANAPOLIS                                                                  126,66"
+  },
+  {
+    "date": "2026-01-06",
+    "display_date": "06/01/2026",
+    "description": "ANAFLEX CALCADOS 01/04 ANAPOLIS",
+    "value": 193.25,
+    "total_purchase_value": 773.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "06/01        ANAFLEX CALCADOS 01/04 ANAPOLIS                                                                   193,25"
+  },
+  {
+    "date": "2026-01-07",
+    "display_date": "07/01/2026",
+    "description": "SEMPRE MAIS SUPERMER          ABADIANIA",
+    "value": 26.14,
+    "total_purchase_value": 26.14,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "07/01        SEMPRE MAIS SUPERMER          ABADIANIA                                                            26,14"
+  },
+  {
+    "date": "2026-01-07",
+    "display_date": "07/01/2026",
+    "description": "DROGARIA NOSSA SENHO          ABADIANIA",
+    "value": 30.0,
+    "total_purchase_value": 30.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "07/01        DROGARIA NOSSA SENHO          ABADIANIA                                                            30,00"
+  },
+  {
+    "date": "2026-01-08",
+    "display_date": "08/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 112.0,
+    "total_purchase_value": 112.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "08/01   Pix             PIX EMITIDO OUTRA IF                                                                R$ 112,00D"
+  },
+  {
+    "date": "2026-01-08",
+    "display_date": "08/01/2026",
+    "description": "SEMPRE MAIS SUPERMER          ABADIANIA",
+    "value": 31.45,
+    "total_purchase_value": 31.45,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "08/01        SEMPRE MAIS SUPERMER          ABADIANIA                                                            31,45"
+  },
+  {
+    "date": "2026-01-09",
+    "display_date": "09/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 70.0,
+    "total_purchase_value": 70.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "09/01   Pix             PIX EMITIDO OUTRA IF                                                                 R$ 70,00D"
+  },
+  {
+    "date": "2026-01-09",
+    "display_date": "09/01/2026",
+    "description": "CASA DOS BOLOS PF ANAPOLIS",
+    "value": 54.0,
+    "total_purchase_value": 54.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "09/01/2026     CASA DOS BOLOS PF                              ANAPOLIS            9329      R$ 54,00"
+  },
+  {
+    "date": "2026-01-09",
+    "display_date": "09/01/2026",
+    "description": "DOCE SABOR ANAPOLIS",
+    "value": 72.0,
+    "total_purchase_value": 72.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "09/01/2026     DOCE SABOR                                     ANAPOLIS            9329      R$ 72,00"
+  },
+  {
+    "date": "2026-01-09",
+    "display_date": "09/01/2026",
+    "description": "EnivaldoPedroDa ANAPOLIS",
+    "value": 54.5,
+    "total_purchase_value": 54.5,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "09/01/2026     EnivaldoPedroDa                                ANAPOLIS            9329      R$ 54,50"
+  },
+  {
+    "date": "2026-01-09",
+    "display_date": "09/01/2026",
+    "description": "MUNDIAL COSMETICOS ANAPOLIS",
+    "value": 153.9,
+    "total_purchase_value": 153.9,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "09/01/2026     MUNDIAL COSMETICOS                             ANAPOLIS            9329     R$ 153,90"
+  },
+  {
+    "date": "2026-01-09",
+    "display_date": "09/01/2026",
+    "description": "DLKNET AC BRASIL PARK ANAPOLIS",
+    "value": 44.05,
+    "total_purchase_value": 44.05,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "09/01/2026     DLKNET AC BRASIL PARK                          ANAPOLIS            9329      R$ 44,05"
+  },
+  {
+    "date": "2026-01-09",
+    "display_date": "09/01/2026",
+    "description": "COXINHAS EXPRESS ANAPOLIS",
+    "value": 39.8,
+    "total_purchase_value": 39.8,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "09/01/2026     COXINHAS EXPRESS                               ANAPOLIS            9329      R$ 39,80"
+  },
+  {
+    "date": "2026-01-09",
+    "display_date": "09/01/2026",
+    "description": "TaikenSushi ANAPOLIS",
+    "value": 8.0,
+    "total_purchase_value": 8.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "09/01/2026     TaikenSushi                                    ANAPOLIS            9329       R$ 8,00"
+  },
+  {
+    "date": "2026-01-09",
+    "display_date": "09/01/2026",
+    "description": "HOPE - 1/3 Anapolis",
+    "value": 126.6,
+    "total_purchase_value": 379.79999999999995,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "09/01/2026     HOPE - 1/3                                     Anapolis            9329     R$ 126,60"
+  },
+  {
+    "date": "2026-01-09",
+    "display_date": "09/01/2026",
+    "description": "BRASIL PARK PARTICIP E ANAPOLIS",
+    "value": 8.0,
+    "total_purchase_value": 8.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "09/01/2026     BRASIL PARK PARTICIP E                         ANAPOLIS            9329       R$ 8,00"
+  },
+  {
+    "date": "2026-01-09",
+    "display_date": "09/01/2026",
+    "description": "MP KIJOIAAFIACAO OSASCO",
+    "value": 60.0,
+    "total_purchase_value": 60.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "09/01/2026     MP KIJOIAAFIACAO                               OSASCO              9329      R$ 60,00"
+  },
+  {
+    "date": "2026-01-09",
+    "display_date": "09/01/2026",
+    "description": "RIO VERMELHO ATACADO E ANAPOLIS",
+    "value": 12.99,
+    "total_purchase_value": 12.99,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "09/01/2026     RIO VERMELHO ATACADO E                         ANAPOLIS            9329      R$ 12,99"
+  },
+  {
+    "date": "2026-01-09",
+    "display_date": "09/01/2026",
+    "description": "PedroFerreira ANAPOLIS",
+    "value": 117.42,
+    "total_purchase_value": 117.42,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "09/01/2026     PedroFerreira                                  ANAPOLIS            9329     R$ 117,42"
+  },
+  {
+    "date": "2026-01-09",
+    "display_date": "09/01/2026",
+    "description": "ROUTE 88 EMPORIO ANAPOLIS",
+    "value": 30.0,
+    "total_purchase_value": 30.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "09/01/2026     ROUTE 88 EMPORIO                               ANAPOLIS            9329      R$ 30,00"
+  },
+  {
+    "date": "2026-01-10",
+    "display_date": "10/01/2026",
+    "description": "SEMPRE MAIS SUPERMERCA ABADIANIA",
+    "value": 224.96,
+    "total_purchase_value": 224.96,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "10/01/2026     SEMPRE MAIS SUPERMERCA                         ABADIANIA           9329     R$ 224,96"
+  },
+  {
+    "date": "2026-01-11",
+    "display_date": "11/01/2026",
+    "description": "CONRADO MOREIRA RODRIG ANAPOLIS",
+    "value": 187.0,
+    "total_purchase_value": 187.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "11/01/2026     CONRADO MOREIRA RODRIG                         ANAPOLIS            9329     R$ 187,00"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "4200990         DEB.PARCELAS SUBSC./INTEGR.",
+    "value": 20.0,
+    "total_purchase_value": 20.0,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "12/01   4200990         DEB.PARCELAS SUBSC./INTEGR.                                                          R$ 20,00D"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 20.0,
+    "total_purchase_value": 20.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "12/01   Pix             PIX EMITIDO OUTRA IF                                                                 R$ 20,00D"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 200.0,
+    "total_purchase_value": 200.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "12/01   Pix             PIX EMITIDO OUTRA IF                                                                R$ 200,00D"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 20.0,
+    "total_purchase_value": 20.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "12/01   Pix             PIX EMITIDO OUTRA IF                                                                 R$ 20,00D"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 147.0,
+    "total_purchase_value": 147.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "12/01   Pix             PIX EMITIDO OUTRA IF                                                                R$ 147,00D"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "CONS\u00d3RCIOS      D\u00c9B.CONV.DEMAIS EMPRESAS",
+    "value": 1174.74,
+    "total_purchase_value": 1174.74,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "12/01   CONS\u00d3RCIOS      D\u00c9B.CONV.DEMAIS EMPRESAS                                                           R$ 1.174,74D"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "CENTRO DE TRAUMATOLOGI - 1/2 ANAPOLIS",
+    "value": 340.0,
+    "total_purchase_value": 680.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "12/01/2026     CENTRO DE TRAUMATOLOGI - 1/2                   ANAPOLIS            9329     R$ 340,00"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "COMANDO ADVENTURE ANAPOLIS",
+    "value": 31.9,
+    "total_purchase_value": 31.9,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "12/01/2026     COMANDO ADVENTURE                              ANAPOLIS            9329      R$ 31,90"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "00129 SH BRASIL PARK - 1/3 ANAPOLIS",
+    "value": 133.13,
+    "total_purchase_value": 399.39,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "12/01/2026     00129 SH BRASIL PARK - 1/3                     ANAPOLIS            9329     R$ 133,13"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "INOVAR COSMETICOS ANAPOLIS",
+    "value": 12.6,
+    "total_purchase_value": 12.6,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "12/01/2026     INOVAR COSMETICOS                              ANAPOLIS            9329      R$ 12,60"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "BRASIL PARK PARTICIP E ANAPOLIS",
+    "value": 8.0,
+    "total_purchase_value": 8.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "12/01/2026     BRASIL PARK PARTICIP E                         ANAPOLIS            9329       R$ 8,00"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "LANCHE DO PAULINHO Anapolis",
+    "value": 95.5,
+    "total_purchase_value": 95.5,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "12/01/2026     LANCHE DO PAULINHO                             Anapolis            9329      R$ 95,50"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "POSTO ANAPOLINO ANAPOLIS",
+    "value": 172.48,
+    "total_purchase_value": 172.48,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "12/01/2026     POSTO ANAPOLINO                                ANAPOLIS            9329     R$ 172,48"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "LOJA DOS AVIAMENTOS OURO VERDE DE",
+    "value": 99.4,
+    "total_purchase_value": 99.4,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "12/01/2026     LOJA DOS AVIAMENTOS                            OURO VERDE DE       9329      R$ 99,40"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "LAVIE Anapolis",
+    "value": 66.0,
+    "total_purchase_value": 66.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "12/01/2026     LAVIE                                          Anapolis            9329      R$ 66,00"
+  },
+  {
+    "date": "2026-01-12",
+    "display_date": "12/01/2026",
+    "description": "DOCE PALADAR ALIMENT ANAPOLIS",
+    "value": 52.95,
+    "total_purchase_value": 52.95,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "12/01/2026     DOCE PALADAR ALIMENT                           ANAPOLIS            9329      R$ 52,95"
+  },
+  {
+    "date": "2026-01-13",
+    "display_date": "13/01/2026",
+    "description": "20380627        D\u00c9B.TRANSF.CONTAS DIF.TIT. INTERCREDIS",
+    "value": 140.0,
+    "total_purchase_value": 140.0,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "13/01   20380627        D\u00c9B.TRANSF.CONTAS DIF.TIT. INTERCREDIS                                              R$ 140,00D"
+  },
+  {
+    "date": "2026-01-13",
+    "display_date": "13/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 20.0,
+    "total_purchase_value": 20.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "13/01   Pix             PIX EMITIDO OUTRA IF                                                                 R$ 20,00D"
+  },
+  {
+    "date": "2026-01-13",
+    "display_date": "13/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 1234.05,
+    "total_purchase_value": 1234.05,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "13/01   Pix             PIX EMITIDO OUTRA IF                                                               R$ 1.234,05D"
+  },
+  {
+    "date": "2026-01-13",
+    "display_date": "13/01/2026",
+    "description": "TeoCarParkingAdm GOIANIA",
+    "value": 10.0,
+    "total_purchase_value": 10.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "13/01/2026     TeoCarParkingAdm                               GOIANIA             9329      R$ 10,00"
+  },
+  {
+    "date": "2026-01-13",
+    "display_date": "13/01/2026",
+    "description": "TELECELL ANAPOLIS",
+    "value": 20.0,
+    "total_purchase_value": 20.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "13/01/2026     TELECELL                                       ANAPOLIS            9329      R$ 20,00"
+  },
+  {
+    "date": "2026-01-14",
+    "display_date": "14/01/2026",
+    "description": "SEMPRE MAIS SUPERMERCA ABADIANIA",
+    "value": 59.23,
+    "total_purchase_value": 59.23,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "14/01/2026     SEMPRE MAIS SUPERMERCA                         ABADIANIA           9329      R$ 59,23"
+  },
+  {
+    "date": "2026-01-14",
+    "display_date": "14/01/2026",
+    "description": "JERIVA ABADIANIA",
+    "value": 49.52,
+    "total_purchase_value": 49.52,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "14/01/2026     JERIVA                                         ABADIANIA           9329      R$ 49,52"
+  },
+  {
+    "date": "2026-01-14",
+    "display_date": "14/01/2026",
+    "description": "POSTO SAO FRANCISCO EI ANAPOLIS",
+    "value": 70.0,
+    "total_purchase_value": 70.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "14/01/2026     POSTO SAO FRANCISCO EI                         ANAPOLIS            9329      R$ 70,00"
+  },
+  {
+    "date": "2026-01-15",
+    "display_date": "15/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 80.0,
+    "total_purchase_value": 80.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "15/01   Pix             PIX EMITIDO OUTRA IF                                                                 R$ 80,00D"
+  },
+  {
+    "date": "2026-01-15",
+    "display_date": "15/01/2026",
+    "description": "16342146        D\u00c9B.TIT.COMPE EFETIVADO",
+    "value": 1014.69,
+    "total_purchase_value": 1014.69,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "15/01   16342146        D\u00c9B.TIT.COMPE EFETIVADO                                                            R$ 1.014,69D"
+  },
+  {
+    "date": "2026-01-15",
+    "display_date": "15/01/2026",
+    "description": "LIVRARIA EL SHADAY - 1/3 GOIANIA",
+    "value": 88.33,
+    "total_purchase_value": 264.99,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "15/01/2026     LIVRARIA EL SHADAY - 1/3                       GOIANIA             3657      R$ 88,33"
+  },
+  {
+    "date": "2026-01-15",
+    "display_date": "15/01/2026",
+    "description": "DROGASIL 1544 ANAPOLIS",
+    "value": 50.68,
+    "total_purchase_value": 50.68,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "15/01/2026     DROGASIL 1544                                  ANAPOLIS            3657      R$ 50,68"
+  },
+  {
+    "date": "2026-01-15",
+    "display_date": "15/01/2026",
+    "description": "LAB EVANGELICO LTDA - 1/3 ANAPOLIS",
+    "value": 327.33,
+    "total_purchase_value": 981.99,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "15/01/2026     LAB EVANGELICO LTDA - 1/3                      ANAPOLIS            9329     R$ 327,33"
+  },
+  {
+    "date": "2026-01-15",
+    "display_date": "15/01/2026",
+    "description": "WasleyGabriel ANAPOLIS",
+    "value": 13.0,
+    "total_purchase_value": 13.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "15/01/2026     WasleyGabriel                                  ANAPOLIS            9329      R$ 13,00"
+  },
+  {
+    "date": "2026-01-15",
+    "display_date": "15/01/2026",
+    "description": "DAMIANA GOMESMICROPIME ANAPOLIS",
+    "value": 55.0,
+    "total_purchase_value": 55.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "15/01/2026     DAMIANA GOMESMICROPIME                         ANAPOLIS            2923      R$ 55,00"
+  },
+  {
+    "date": "2026-01-15",
+    "display_date": "15/01/2026",
+    "description": "MABIA BERNARDO HAIR ST ANAPOLIS",
+    "value": 40.0,
+    "total_purchase_value": 40.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "15/01/2026     MABIA BERNARDO HAIR ST                         ANAPOLIS            2923      R$ 40,00"
+  },
+  {
+    "date": "2026-01-16",
+    "display_date": "16/01/2026",
+    "description": "958699          COMPRA NACIONAL DEBIT MASTERCARD",
+    "value": 5.4,
+    "total_purchase_value": 5.4,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "16/01   958699          COMPRA NACIONAL DEBIT MASTERCARD                                                      R$ 5,40D"
+  },
+  {
+    "date": "2026-01-16",
+    "display_date": "16/01/2026",
+    "description": "CINEMARK BRASIL SA EC SAO PAULO",
+    "value": 141.36,
+    "total_purchase_value": 141.36,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "16/01/2026     CINEMARK BRASIL SA EC                          SAO PAULO           3657     R$ 141,36"
+  },
+  {
+    "date": "2026-01-16",
+    "display_date": "16/01/2026",
+    "description": "FLAMBOYANT SHOPPING CE GOIANIA",
+    "value": 79.8,
+    "total_purchase_value": 79.8,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "16/01/2026   FLAMBOYANT SHOPPING CE                         GOIANIA         3657        R$ 79,80"
+  },
+  {
+    "date": "2026-01-16",
+    "display_date": "16/01/2026",
+    "description": "FLAMBOYANT ESTACIONAME GOIANIA",
+    "value": 34.4,
+    "total_purchase_value": 34.4,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "16/01/2026   FLAMBOYANT ESTACIONAME                         GOIANIA         3657        R$ 34,40"
+  },
+  {
+    "date": "2026-01-16",
+    "display_date": "16/01/2026",
+    "description": "MLPMagaluMagazine LuV Franca",
+    "value": 264.95,
+    "total_purchase_value": 264.95,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "16/01/2026   MLPMagaluMagazine LuV                          Franca          3657       R$ 264,95"
+  },
+  {
+    "date": "2026-01-17",
+    "display_date": "17/01/2026",
+    "description": "POSTO IMPERIAL ANAPOLIS",
+    "value": 100.0,
+    "total_purchase_value": 100.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "17/01/2026   POSTO IMPERIAL                                 ANAPOLIS        3657       R$ 100,00"
+  },
+  {
+    "date": "2026-01-17",
+    "display_date": "17/01/2026",
+    "description": "STUDIO M - 1/3 URUACU",
+    "value": 400.0,
+    "total_purchase_value": 1200.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "17/01/2026   STUDIO M - 1/3                                 URUACU          2923       R$ 400,00"
+  },
+  {
+    "date": "2026-01-17",
+    "display_date": "17/01/2026",
+    "description": "PANIFICADORA ARTE TRIG Campo Limpo d",
+    "value": 49.17,
+    "total_purchase_value": 49.17,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "17/01/2026   PANIFICADORA ARTE TRIG                         Campo Limpo d   3657        R$ 49,17"
+  },
+  {
+    "date": "2026-01-17",
+    "display_date": "17/01/2026",
+    "description": "LIVRARIA EL SHADAY GOIANIA",
+    "value": 49.9,
+    "total_purchase_value": 49.9,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "17/01/2026   LIVRARIA EL SHADAY                             GOIANIA         3657        R$ 49,90"
+  },
+  {
+    "date": "2026-01-18",
+    "display_date": "18/01/2026",
+    "description": "COSTELA DE VACA ANAPOLIS",
+    "value": 326.81,
+    "total_purchase_value": 326.81,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "18/01/2026   COSTELA DE VACA                                ANAPOLIS        2923       R$ 326,81"
+  },
+  {
+    "date": "2026-01-18",
+    "display_date": "18/01/2026",
+    "description": "DROGASIL 2777 ANAPOLIS",
+    "value": 139.18,
+    "total_purchase_value": 139.18,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "18/01/2026   DROGASIL 2777                                  ANAPOLIS        3657       R$ 139,18"
+  },
+  {
+    "date": "2026-01-18",
+    "display_date": "18/01/2026",
+    "description": "RIO VERMELHO ATACADO E ANAPOLIS",
+    "value": 46.29,
+    "total_purchase_value": 46.29,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "18/01/2026   RIO VERMELHO ATACADO E                         ANAPOLIS        3657        R$ 46,29"
+  },
+  {
+    "date": "2026-01-18",
+    "display_date": "18/01/2026",
+    "description": "CASA VELHA ANAPOLIS",
+    "value": 182.6,
+    "total_purchase_value": 182.6,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "18/01/2026   CASA VELHA                                     ANAPOLIS        3657       R$ 182,60"
+  },
+  {
+    "date": "2026-01-18",
+    "display_date": "18/01/2026",
+    "description": "DROGARIA SAO PAULO SA ANAPOLIS",
+    "value": 37.97,
+    "total_purchase_value": 37.97,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "18/01/2026   DROGARIA SAO PAULO SA                          ANAPOLIS        3657        R$ 37,97"
+  },
+  {
+    "date": "2026-01-19",
+    "display_date": "19/01/2026",
+    "description": "693176          COMPRA NACIONAL DEBIT MASTERCARD",
+    "value": 396.4,
+    "total_purchase_value": 396.4,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "19/01   693176          COMPRA NACIONAL DEBIT MASTERCARD                                                         R$ 396,40D"
+  },
+  {
+    "date": "2026-01-19",
+    "display_date": "19/01/2026",
+    "description": "690449          COMPRA NACIONAL DEBIT MASTERCARD",
+    "value": 185.0,
+    "total_purchase_value": 185.0,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "19/01   690449          COMPRA NACIONAL DEBIT MASTERCARD                                                         R$ 185,00D"
+  },
+  {
+    "date": "2026-01-19",
+    "display_date": "19/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 280.0,
+    "total_purchase_value": 280.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "19/01   Pix             PIX EMITIDO OUTRA IF                                                                     R$ 280,00D"
+  },
+  {
+    "date": "2026-01-19",
+    "display_date": "19/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 150.0,
+    "total_purchase_value": 150.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "19/01   Pix             PIX EMITIDO OUTRA IF                                                                     R$ 150,00D"
+  },
+  {
+    "date": "2026-01-19",
+    "display_date": "19/01/2026",
+    "description": "667395          COMPRA NACIONAL DEBIT MASTERCARD",
+    "value": 100.0,
+    "total_purchase_value": 100.0,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "19/01   667395          COMPRA NACIONAL DEBIT MASTERCARD                                                         R$ 100,00D"
+  },
+  {
+    "date": "2026-01-19",
+    "display_date": "19/01/2026",
+    "description": "20450225        TRANSF.REALIZADA PIX SICOOB",
+    "value": 16.0,
+    "total_purchase_value": 16.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "19/01   20450225        TRANSF.REALIZADA PIX SICOOB                                                               R$ 16,00D"
+  },
+  {
+    "date": "2026-01-19",
+    "display_date": "19/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 56.0,
+    "total_purchase_value": 56.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "19/01   Pix             PIX EMITIDO OUTRA IF                                                                      R$ 56,00D"
+  },
+  {
+    "date": "2026-01-19",
+    "display_date": "19/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 30.0,
+    "total_purchase_value": 30.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "19/01   Pix             PIX EMITIDO OUTRA IF                                                                 R$ 30,00D"
+  },
+  {
+    "date": "2026-01-19",
+    "display_date": "19/01/2026",
+    "description": "993884          COMPRA NACIONAL DEBIT MASTERCARD",
+    "value": 5.4,
+    "total_purchase_value": 5.4,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "19/01   993884          COMPRA NACIONAL DEBIT MASTERCARD                                                      R$ 5,40D"
+  },
+  {
+    "date": "2026-01-19",
+    "display_date": "19/01/2026",
+    "description": "MASTERCARD      D\u00c9B.CONV.DEMAIS EMPRESAS (Pagamento Fatura Cart\u00e3o)",
+    "value": 3720.51,
+    "total_purchase_value": 3720.51,
+    "type": "Pagamento Fatura",
+    "status": "Credito",
+    "original_line": "19/01   MASTERCARD      D\u00c9B.CONV.DEMAIS EMPRESAS                                                           R$ 3.720,51D"
+  },
+  {
+    "date": "2026-01-19",
+    "display_date": "19/01/2026",
+    "description": "MENDES P DE CONFEITARI ANAPOLIS",
+    "value": 53.65,
+    "total_purchase_value": 53.65,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "19/01/2026   MENDES P DE CONFEITARI                         ANAPOLIS        3657        R$ 53,65"
+  },
+  {
+    "date": "2026-01-19",
+    "display_date": "19/01/2026",
+    "description": "00129 SH BRASIL PARK - 1/3 ANAPOLIS",
+    "value": 236.47,
+    "total_purchase_value": 709.41,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "19/01/2026   00129 SH BRASIL PARK - 1/3                     ANAPOLIS        2923       R$ 236,47"
+  },
+  {
+    "date": "2026-01-19",
+    "display_date": "19/01/2026",
+    "description": "BRASIL PARK PARTICIP E ANAPOLIS",
+    "value": 8.0,
+    "total_purchase_value": 8.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "19/01/2026   BRASIL PARK PARTICIP E                         ANAPOLIS        3657          R$ 8,00"
+  },
+  {
+    "date": "2026-01-19",
+    "display_date": "19/01/2026",
+    "description": "PAYGOFARMACIA CRISTO ANAPOLIS",
+    "value": 9.9,
+    "total_purchase_value": 9.9,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "19/01/2026   PAYGOFARMACIA CRISTO                           ANAPOLIS        3657          R$ 9,90"
+  },
+  {
+    "date": "2026-01-20",
+    "display_date": "20/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 59.9,
+    "total_purchase_value": 59.9,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "20/01   Pix             PIX EMITIDO OUTRA IF                                                                      R$ 59,90D"
+  },
+  {
+    "date": "2026-01-21",
+    "display_date": "21/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 20.0,
+    "total_purchase_value": 20.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "21/01   Pix             PIX EMITIDO OUTRA IF                                                                      R$ 20,00D"
+  },
+  {
+    "date": "2026-01-21",
+    "display_date": "21/01/2026",
+    "description": "455361          COMPRA NACIONAL DEBIT MASTERCARD",
+    "value": 37.0,
+    "total_purchase_value": 37.0,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "21/01   455361          COMPRA NACIONAL DEBIT MASTERCARD                                                          R$ 37,00D"
+  },
+  {
+    "date": "2026-01-21",
+    "display_date": "21/01/2026",
+    "description": "PANIFICADORA ELDORADO ANAPOLIS",
+    "value": 89.55,
+    "total_purchase_value": 89.55,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "21/01/2026   PANIFICADORA ELDORADO                          ANAPOLIS        3657        R$ 89,55"
+  },
+  {
+    "date": "2026-01-21",
+    "display_date": "21/01/2026",
+    "description": "MP JMORTOPEDIA - 1/2 Anpolis",
+    "value": 225.0,
+    "total_purchase_value": 450.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "21/01/2026   MP JMORTOPEDIA - 1/2                           Anpolis         2923       R$ 225,00"
+  },
+  {
+    "date": "2026-01-21",
+    "display_date": "21/01/2026",
+    "description": "FULO DO CERRADO ANAPOLIS",
+    "value": 68.27,
+    "total_purchase_value": 68.27,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "21/01/2026   FULO DO CERRADO                                ANAPOLIS        3657        R$ 68,27"
+  },
+  {
+    "date": "2026-01-22",
+    "display_date": "22/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 20.0,
+    "total_purchase_value": 20.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "22/01   Pix             PIX EMITIDO OUTRA IF                                                                      R$ 20,00D"
+  },
+  {
+    "date": "2026-01-22",
+    "display_date": "22/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 70.0,
+    "total_purchase_value": 70.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "22/01   Pix             PIX EMITIDO OUTRA IF                                                                      R$ 70,00D"
+  },
+  {
+    "date": "2026-01-22",
+    "display_date": "22/01/2026",
+    "description": "EVANDRA SILVA SALES NE ANAPOLIS",
+    "value": 44.0,
+    "total_purchase_value": 44.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "22/01/2026   EVANDRA SILVA SALES NE                         ANAPOLIS        3657        R$ 44,00"
+  },
+  {
+    "date": "2026-01-22",
+    "display_date": "22/01/2026",
+    "description": "WasleyGabriel ANAPOLIS",
+    "value": 17.0,
+    "total_purchase_value": 17.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "22/01/2026   WasleyGabriel                                  ANAPOLIS        3657        R$ 17,00"
+  },
+  {
+    "date": "2026-01-22",
+    "display_date": "22/01/2026",
+    "description": "CRA CLINICA RADIOLOGI - 1/4 ANAPOLIS",
+    "value": 101.25,
+    "total_purchase_value": 405.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "22/01/2026   CRA CLINICA RADIOLOGI - 1/4                    ANAPOLIS        3657       R$ 101,25"
+  },
+  {
+    "date": "2026-01-22",
+    "display_date": "22/01/2026",
+    "description": "ALLPARK ANAPOLIS",
+    "value": 27.0,
+    "total_purchase_value": 27.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "22/01/2026   ALLPARK                                        ANAPOLIS        3657        R$ 27,00"
+  },
+  {
+    "date": "2026-01-22",
+    "display_date": "22/01/2026",
+    "description": "FULO DO CERRADO ANAPOLIS",
+    "value": 178.1,
+    "total_purchase_value": 178.1,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "22/01/2026   FULO DO CERRADO                                ANAPOLIS        3657       R$ 178,10"
+  },
+  {
+    "date": "2026-01-23",
+    "display_date": "23/01/2026",
+    "description": "DOCE SABOR ANAPOLIS",
+    "value": 139.05,
+    "total_purchase_value": 139.05,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "23/01/2026   DOCE SABOR                                     ANAPOLIS        3657       R$ 139,05"
+  },
+  {
+    "date": "2026-01-23",
+    "display_date": "23/01/2026",
+    "description": "AUTO POSTO CERRADO 060 ANAPOLIS",
+    "value": 100.0,
+    "total_purchase_value": 100.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "23/01/2026   AUTO POSTO CERRADO 060                         ANAPOLIS        3657       R$ 100,00"
+  },
+  {
+    "date": "2026-01-23",
+    "display_date": "23/01/2026",
+    "description": "JERIVA ABADIANIA",
+    "value": 31.9,
+    "total_purchase_value": 31.9,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "23/01/2026   JERIVA                                         ABADIANIA       3657        R$ 31,90"
+  },
+  {
+    "date": "2026-01-23",
+    "display_date": "23/01/2026",
+    "description": "DrogariaBarbosa ANAPOLIS",
+    "value": 18.0,
+    "total_purchase_value": 18.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "23/01/2026   DrogariaBarbosa                                ANAPOLIS        3657        R$ 18,00"
+  },
+  {
+    "date": "2026-01-24",
+    "display_date": "24/01/2026",
+    "description": "CONCEBRA GOIANIA",
+    "value": 5.4,
+    "total_purchase_value": 5.4,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "24/01/2026   CONCEBRA                                       GOIANIA         3657          R$ 5,40"
+  },
+  {
+    "date": "2026-01-24",
+    "display_date": "24/01/2026",
+    "description": "PAGUE MENOS 0290 MTZ",
+    "value": 19.47,
+    "total_purchase_value": 19.47,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "24/01/2026   PAGUE MENOS 0290                               MTZ             3657        R$ 19,47"
+  },
+  {
+    "date": "2026-01-24",
+    "display_date": "24/01/2026",
+    "description": "GEPE COM DERIVADOS PET GOIANIA",
+    "value": 100.0,
+    "total_purchase_value": 100.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "24/01/2026   GEPE COM DERIVADOS PET                         GOIANIA         3657       R$ 100,00"
+  },
+  {
+    "date": "2026-01-24",
+    "display_date": "24/01/2026",
+    "description": "CONCEBRA GOIANIA",
+    "value": 5.4,
+    "total_purchase_value": 5.4,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "24/01/2026   CONCEBRA                                       GOIANIA         3657          R$ 5,40"
+  },
+  {
+    "date": "2026-01-24",
+    "display_date": "24/01/2026",
+    "description": "LANCHE DO PAULINHO Anapolis",
+    "value": 83.0,
+    "total_purchase_value": 83.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "24/01/2026   LANCHE DO PAULINHO                             Anapolis        3657        R$ 83,00"
+  },
+  {
+    "date": "2026-01-25",
+    "display_date": "25/01/2026",
+    "description": "COXINHAS EXPRESS ANAPOLIS",
+    "value": 19.5,
+    "total_purchase_value": 19.5,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "25/01/2026   COXINHAS EXPRESS                               ANAPOLIS        3657        R$ 19,50"
+  },
+  {
+    "date": "2026-01-25",
+    "display_date": "25/01/2026",
+    "description": "BRASIL PARK PARTICIP E ANAPOLIS",
+    "value": 8.0,
+    "total_purchase_value": 8.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "25/01/2026   BRASIL PARK PARTICIP E                         ANAPOLIS        3657          R$ 8,00"
+  },
+  {
+    "date": "2026-01-25",
+    "display_date": "25/01/2026",
+    "description": "WasleyGabriel ANAPOLIS",
+    "value": 17.0,
+    "total_purchase_value": 17.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "25/01/2026   WasleyGabriel                                  ANAPOLIS        3657        R$ 17,00"
+  },
+  {
+    "date": "2026-01-25",
+    "display_date": "25/01/2026",
+    "description": "JIMCOM 42958161 VAN ANAPOLIS",
+    "value": 155.0,
+    "total_purchase_value": 155.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "25/01/2026   JIMCOM 42958161 VAN                            ANAPOLIS        3657       R$ 155,00"
+  },
+  {
+    "date": "2026-01-25",
+    "display_date": "25/01/2026",
+    "description": "ACAITERIA MIX ANAPOLIS",
+    "value": 23.47,
+    "total_purchase_value": 23.47,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "25/01/2026   ACAITERIA MIX                                  ANAPOLIS        3657        R$ 23,47"
+  },
+  {
+    "date": "2026-01-25",
+    "display_date": "25/01/2026",
+    "description": "RIO VERMELHO ATAC E VA ANAPOLIS",
+    "value": 53.97,
+    "total_purchase_value": 53.97,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "25/01/2026   RIO VERMELHO ATAC E VA                         ANAPOLIS        3657        R$ 53,97"
+  },
+  {
+    "date": "2026-01-26",
+    "display_date": "26/01/2026",
+    "description": "221             DEB.PARCELAS SUBSC./INTEGR.",
+    "value": 20.0,
+    "total_purchase_value": 20.0,
+    "type": "Debito",
+    "status": "Pago",
+    "original_line": "26/01   221             DEB.PARCELAS SUBSC./INTEGR.                                                               R$ 20,00D"
+  },
+  {
+    "date": "2026-01-26",
+    "display_date": "26/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 1000.0,
+    "total_purchase_value": 1000.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "26/01   Pix             PIX EMITIDO OUTRA IF                                                                   R$ 1.000,00D"
+  },
+  {
+    "date": "2026-01-26",
+    "display_date": "26/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 60.0,
+    "total_purchase_value": 60.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "26/01   Pix             PIX EMITIDO OUTRA IF                                                                      R$ 60,00D"
+  },
+  {
+    "date": "2026-01-26",
+    "display_date": "26/01/2026",
+    "description": "CRA CLINICA RADIOLOGI ANAPOLIS",
+    "value": 195.0,
+    "total_purchase_value": 195.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "26/01/2026   CRA CLINICA RADIOLOGI                          ANAPOLIS        3657       R$ 195,00"
+  },
+  {
+    "date": "2026-01-26",
+    "display_date": "26/01/2026",
+    "description": "PANIFICADORA ARTE TRIG Anapolis",
+    "value": 65.86,
+    "total_purchase_value": 65.86,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "26/01/2026   PANIFICADORA ARTE TRIG                         Anapolis        2923        R$ 65,86"
+  },
+  {
+    "date": "2026-01-26",
+    "display_date": "26/01/2026",
+    "description": "ALLPARK ANAPOLIS",
+    "value": 8.0,
+    "total_purchase_value": 8.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "26/01/2026   ALLPARK                                        ANAPOLIS        3657          R$ 8,00"
+  },
+  {
+    "date": "2026-01-26",
+    "display_date": "26/01/2026",
+    "description": "LAB EVANGELICO LTDA - 1/3 ANAPOLIS",
+    "value": 123.49,
+    "total_purchase_value": 370.46999999999997,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "26/01/2026   LAB EVANGELICO LTDA - 1/3                      ANAPOLIS        3657       R$ 123,49"
+  },
+  {
+    "date": "2026-01-26",
+    "display_date": "26/01/2026",
+    "description": "ESPACO DA BELEZA ANAPOLIS",
+    "value": 18.98,
+    "total_purchase_value": 18.98,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "26/01/2026   ESPACO DA BELEZA                               ANAPOLIS        2923        R$ 18,98"
+  },
+  {
+    "date": "2026-01-26",
+    "display_date": "26/01/2026",
+    "description": "ACAITERIA MIX ANAPOLIS",
+    "value": 44.19,
+    "total_purchase_value": 44.19,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "26/01/2026   ACAITERIA MIX                                  ANAPOLIS        3657        R$ 44,19"
+  },
+  {
+    "date": "2026-01-26",
+    "display_date": "26/01/2026",
+    "description": "SUBWAY Anapolis",
+    "value": 13.0,
+    "total_purchase_value": 13.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "26/01/2026   SUBWAY                                         Anapolis        3657        R$ 13,00"
+  },
+  {
+    "date": "2026-01-26",
+    "display_date": "26/01/2026",
+    "description": "copyfacil ANAPOLIS",
+    "value": 79.75,
+    "total_purchase_value": 79.75,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "26/01/2026   copyfacil                                      ANAPOLIS        3657        R$ 79,75"
+  },
+  {
+    "date": "2026-01-26",
+    "display_date": "26/01/2026",
+    "description": "MUNDIAL COSMETICOS ANAPOLIS",
+    "value": 29.8,
+    "total_purchase_value": 29.8,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "26/01/2026   MUNDIAL COSMETICOS                             ANAPOLIS        2923        R$ 29,80"
+  },
+  {
+    "date": "2026-01-26",
+    "display_date": "26/01/2026",
+    "description": "TABACARIA DUARTE LTDA ANAPOLIS",
+    "value": 39.0,
+    "total_purchase_value": 39.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "26/01/2026   TABACARIA DUARTE LTDA                          ANAPOLIS        3657        R$ 39,00"
+  },
+  {
+    "date": "2026-01-27",
+    "display_date": "27/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 35.0,
+    "total_purchase_value": 35.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "27/01   Pix             PIX EMITIDO OUTRA IF                                                                      R$ 35,00D"
+  },
+  {
+    "date": "2026-01-27",
+    "display_date": "27/01/2026",
+    "description": "FULO DO CERRADO ANAPOLIS",
+    "value": 228.96,
+    "total_purchase_value": 228.96,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "27/01/2026   FULO DO CERRADO                                ANAPOLIS        3657       R$ 228,96"
+  },
+  {
+    "date": "2026-01-27",
+    "display_date": "27/01/2026",
+    "description": "CHURRASQUINHO SKEMA 1 ANAPOLIS",
+    "value": 5.0,
+    "total_purchase_value": 5.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "27/01/2026   CHURRASQUINHO SKEMA 1                          ANAPOLIS        3657          R$ 5,00"
+  },
+  {
+    "date": "2026-01-27",
+    "display_date": "27/01/2026",
+    "description": "DrogariaModelo - 1/3 ANAPOLIS",
+    "value": 593.0,
+    "total_purchase_value": 1779.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "27/01/2026   DrogariaModelo - 1/3                           ANAPOLIS        3657       R$ 593,00"
+  },
+  {
+    "date": "2026-01-28",
+    "display_date": "28/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 261.99,
+    "total_purchase_value": 261.99,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "28/01   Pix             PIX EMITIDO OUTRA IF                                                                     R$ 261,99D"
+  },
+  {
+    "date": "2026-01-28",
+    "display_date": "28/01/2026",
+    "description": "Pix             PIX EMITIDO OUTRA IF",
+    "value": 200.0,
+    "total_purchase_value": 200.0,
+    "type": "Pix",
+    "status": "Pago",
+    "original_line": "28/01   Pix             PIX EMITIDO OUTRA IF                                                                     R$ 200,00D"
+  },
+  {
+    "date": "2026-01-28",
+    "display_date": "28/01/2026",
+    "description": "FOOD ITALIA AEROPORTO GUARULHOS",
+    "value": 177.0,
+    "total_purchase_value": 177.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "28/01/2026   FOOD ITALIA AEROPORTO                          GUARULHOS       3657       R$ 177,00"
+  },
+  {
+    "date": "2026-01-28",
+    "display_date": "28/01/2026",
+    "description": "WasleyGabriel ANAPOLIS",
+    "value": 11.0,
+    "total_purchase_value": 11.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "28/01/2026   WasleyGabriel                       ANAPOLIS                       3657         R$ 11,00"
+  },
+  {
+    "date": "2026-01-28",
+    "display_date": "28/01/2026",
+    "description": "JIMCOM PRIME EMBALA GOIANIA",
+    "value": 149.0,
+    "total_purchase_value": 149.0,
+    "type": "Credito",
+    "status": "Credito",
+    "original_line": "28/01/2026   JIMCOM PRIME EMBALA                 GOIANIA                        3657       R$ 149,00"
+  }
+];
+    let currentCurrency = localStorage.getItem('currency') || 'BRL';
+    let exchangeRate = parseFloat(localStorage.getItem('exchangeRate')) || 4.20;
+    
+    let sortField = 'date';
+    let sortDir = 'asc';
+
+    // Init
+    document.getElementById('exchange-rate').value = exchangeRate;
+    updateButtonLabel();
+    renderTable();
+    updatePrices(); 
+    initPaidStatus(); // Load Saved Paid Status
+
+    function updateRate() {
+        exchangeRate = parseFloat(document.getElementById('exchange-rate').value);
+        localStorage.setItem('exchangeRate', exchangeRate);
+        renderTable();
+        updatePrices();
+    }
+
+    function toggleCurrency() {
+        currentCurrency = currentCurrency === 'BRL' ? 'CAD' : 'BRL';
+        localStorage.setItem('currency', currentCurrency);
+        updateButtonLabel();
+        renderTable();
+        updatePrices();
+    }
+
+    function updateButtonLabel() {
+        const btn = document.getElementById('btn-currency');
+        btn.textContent = currentCurrency === 'BRL' ? 'Ver em CAD' : 'Ver em BRL';
+    }
+
+    function formatCurrency(value) {
+        if (currentCurrency === 'CAD') {
+            return (value / exchangeRate).toLocaleString('en-CA', { style: 'currency', currency: 'CAD' });
+        }
+        return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+    
+    function updatePrices() {
+        const elements = document.querySelectorAll('.money');
+        elements.forEach(el => {
+            const val = parseFloat(el.getAttribute('data-val'));
+            el.textContent = formatCurrency(val);
+        });
+    }
+    
+    // --- Paid Status Logic ---
+    function initPaidStatus() {
+        document.querySelectorAll('.clickable-card').forEach(card => {
+            const id = card.id;
+            const savedStatus = localStorage.getItem('status-' + id);
+            
+            if (id === 'invoice-2026-1' && savedStatus === null) { // Default Jan to paid
+                markAsPaid(card, true);
+                return;
+            }
+
+            if (savedStatus === 'true') {
+                markAsPaid(card, true);
+            } else {
+                markAsPaid(card, false);
+            }
+        });
+    }
+
+    function togglePaid(card) {
+        const isPaid = card.classList.contains('paid');
+        markAsPaid(card, !isPaid);
+    }
+
+    function markAsPaid(card, paid) {
+        const statusText = card.querySelector('.status-text');
+        if (paid) {
+            card.classList.add('paid');
+            statusText.textContent = 'PAGO';
+            localStorage.setItem('status-' + card.id, 'true');
+        } else {
+            card.classList.remove('paid');
+            statusText.textContent = 'Aberto';
+            localStorage.setItem('status-' + card.id, 'false');
+        }
+    }
+    // -------------------------
+
+    function sortTable(field) {
+        if (sortField === field) {
+            sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+            sortField = field;
+            sortDir = 'asc';
+        }
+        renderTable();
+    }
+
+    function renderTable() {
+        const tbody = document.querySelector('#expenses-table tbody');
+        const showFatura = document.getElementById('toggle-fatura').checked;
+        const searchDesc = document.getElementById('search-desc').value.toLowerCase();
+        const filterType = document.getElementById('filter-type').value;
+        
+        tbody.innerHTML = '';
+        
+        let filtered = transactions.filter(tx => {
+            if (!showFatura && tx.type === 'Pagamento Fatura') return false;
+            if (searchDesc && !tx.description.toLowerCase().includes(searchDesc)) return false;
+            if (filterType !== 'all' && tx.type !== filterType) return false;
+            return true;
+        });
+        
+        filtered.sort((a, b) => {
+            let valA = a[sortField];
+            let valB = b[sortField];
+            if (typeof valA === 'string') { valA = valA.toLowerCase(); valB = valB.toLowerCase(); }
+            if (valA < valB) return sortDir === 'asc' ? -1 : 1;
+            if (valA > valB) return sortDir === 'asc' ? 1 : -1;
+            return 0;
+        });
+        
+        let totalPix = 0;
+        let totalDebito = 0;
+        let totalComprometido = 0;
+
+        filtered.forEach(tx => {
+            if (tx.type === 'Pix') {
+                totalPix += tx.value;
+                totalComprometido += tx.value;
+            }
+            else if (tx.type === 'Debito') {
+                totalDebito += tx.value;
+                totalComprometido += tx.value;
+            }
+            else if (tx.type === 'Credito') {
+                totalComprometido += tx.total_purchase_value;
+            }
+            // Pagamento Fatura is not added to any of these main cards, it's just tracked as 'paid'
+            // The value of 'totalCredito' card was removed as it's replaced by the monthly cards
+            
+            const row = document.createElement('tr');
+            const typeClass = tx.type.replace(' ', '-'); 
+            const totalDisplay = (tx.type === 'Credito' && tx.total_purchase_value > tx.value) 
+                                ? `<strong>${formatCurrency(tx.total_purchase_value)}</strong>` 
+                                : '-';
+
+            row.innerHTML = `
+                <td>${tx.display_date}</td>
+                <td>${tx.description}</td>
+                <td><span class="badge ${typeClass}">${tx.type}</span></td>
+                <td>${tx.status}</td>
+                <td>${formatCurrency(tx.value)}</td>
+                <td style="color:#555;">${totalDisplay}</td>
+            `;
+            tbody.appendChild(row);
+        });
+
+        // Update Dynamic Summary Cards
+        document.getElementById('total-pix').textContent = formatCurrency(totalPix);
+        document.getElementById('total-debito').textContent = formatCurrency(totalDebito);
+        document.getElementById('total-comprometido').textContent = formatCurrency(totalComprometido);
+    }
+</script>
+
+</body>
+</html>

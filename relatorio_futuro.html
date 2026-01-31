@@ -1,0 +1,1628 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previsão de Faturas Futuras</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f4f9; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #3498db; text-decoration: none; }
+        .month-section { margin-bottom: 30px; border: 1px solid #eee; border-radius: 5px; overflow: hidden; }
+        .month-header { background-color: #2c3e50; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .month-header h2 { margin: 0; font-size: 1.2em; }
+        .month-total { font-size: 1.2em; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #ecf0f1; color: #2c3e50; font-size: 0.9em; }
+        .small-text { font-size: 0.85em; color: #666; }
+        
+        .controls { background: #e8f6f3; padding: 15px; border-radius: 5px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; border: 1px solid #1abc9c; }
+        .controls label { font-weight: bold; color: #16a085; }
+        .controls input { padding: 5px; border: 1px solid #ddd; border-radius: 3px; width: 80px; }
+        .currency-toggle { background-color: #16a085; color: white; border: none; padding: 8px 15px; border-radius: 3px; cursor: pointer; font-weight: bold; }
+        .currency-toggle:hover { background-color: #1abc9c; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="relatorio_viagem.html" class="back-link">&larr; Voltar para Gastos da Viagem</a>
+    <h1>Previsão de Faturas (Cartão de Crédito)</h1>
+    
+    <div class="controls">
+        <label for="exchange-rate">Cotação (1 CAD = R$):</label>
+        <input type="number" id="exchange-rate" value="4.20" step="0.01" onchange="updateRate()">
+        <button class="currency-toggle" onclick="toggleCurrency()" id="btn-currency">Ver em CAD</button>
+    </div>
+
+    <div class="month-section">
+        <div class="month-header">
+            <h2>Fevereiro 2026 (Vencimento 19/02)</h2>
+            <span class="month-total money" data-val="8945.650000000001">R$ 8,945.65</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data Compra</th>
+                    <th>Descrição</th>
+                    <th>Valor Parcela</th>
+                    <th>Parcela</th>
+                    <th>Total Compra</th>
+                    <th>Já Pago</th>
+                    <th>Restante</th>
+                </tr>
+            </thead>
+            <tbody>
+    
+                <tr>
+                    <td>02/01/2026</td>
+                    <td>USA OUTLET  SIMOLANDIA</td>
+                    <td><strong class="money" data-val="166.66">R$ 166.66</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="499.98">-</td>
+                    <td class="small-text money" data-val="166.66">-</td>
+                    <td class="small-text money" data-val="166.66000000000003" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>06/01/2026</td>
+                    <td>ANDA BELLA  ANAPOLIS</td>
+                    <td><strong class="money" data-val="126.66">R$ 126.66</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="379.98">-</td>
+                    <td class="small-text money" data-val="126.66">-</td>
+                    <td class="small-text money" data-val="126.66000000000003" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>06/01/2026</td>
+                    <td>ANAFLEX CALCADOS  ANAPOLIS</td>
+                    <td><strong class="money" data-val="193.25">R$ 193.25</strong></td>
+                    <td style="text-align:center;">2/4</td>
+                    <td class="small-text money" data-val="773.0">-</td>
+                    <td class="small-text money" data-val="193.25">-</td>
+                    <td class="small-text money" data-val="386.5" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>CASA DOS BOLOS PF ANAPOLIS</td>
+                    <td><strong class="money" data-val="54.0">R$ 54.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="54.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>DOCE SABOR ANAPOLIS</td>
+                    <td><strong class="money" data-val="72.0">R$ 72.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="72.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>EnivaldoPedroDa ANAPOLIS</td>
+                    <td><strong class="money" data-val="54.5">R$ 54.50</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="54.5">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>MUNDIAL COSMETICOS ANAPOLIS</td>
+                    <td><strong class="money" data-val="153.9">R$ 153.90</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="153.9">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>DLKNET AC BRASIL PARK ANAPOLIS</td>
+                    <td><strong class="money" data-val="44.05">R$ 44.05</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="44.05">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>COXINHAS EXPRESS ANAPOLIS</td>
+                    <td><strong class="money" data-val="39.8">R$ 39.80</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="39.8">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>TaikenSushi ANAPOLIS</td>
+                    <td><strong class="money" data-val="8.0">R$ 8.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="8.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>HOPE  Anapolis</td>
+                    <td><strong class="money" data-val="126.6">R$ 126.60</strong></td>
+                    <td style="text-align:center;">1/3</td>
+                    <td class="small-text money" data-val="379.79999999999995">-</td>
+                    <td class="small-text money" data-val="0.0">-</td>
+                    <td class="small-text money" data-val="253.19999999999996" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>BRASIL PARK PARTICIP E ANAPOLIS</td>
+                    <td><strong class="money" data-val="8.0">R$ 8.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="8.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>MP KIJOIAAFIACAO OSASCO</td>
+                    <td><strong class="money" data-val="60.0">R$ 60.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="60.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>RIO VERMELHO ATACADO E ANAPOLIS</td>
+                    <td><strong class="money" data-val="12.99">R$ 12.99</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="12.99">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>PedroFerreira ANAPOLIS</td>
+                    <td><strong class="money" data-val="117.42">R$ 117.42</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="117.42">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>ROUTE 88 EMPORIO ANAPOLIS</td>
+                    <td><strong class="money" data-val="30.0">R$ 30.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="30.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>10/01/2026</td>
+                    <td>SEMPRE MAIS SUPERMERCA ABADIANIA</td>
+                    <td><strong class="money" data-val="224.96">R$ 224.96</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="224.96">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>11/01/2026</td>
+                    <td>CONRADO MOREIRA RODRIG ANAPOLIS</td>
+                    <td><strong class="money" data-val="187.0">R$ 187.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="187.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>CENTRO DE TRAUMATOLOGI  ANAPOLIS</td>
+                    <td><strong class="money" data-val="340.0">R$ 340.00</strong></td>
+                    <td style="text-align:center;">1/2</td>
+                    <td class="small-text money" data-val="680.0">-</td>
+                    <td class="small-text money" data-val="0.0">-</td>
+                    <td class="small-text money" data-val="340.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>COMANDO ADVENTURE ANAPOLIS</td>
+                    <td><strong class="money" data-val="31.9">R$ 31.90</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="31.9">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>00129 SH BRASIL PARK  ANAPOLIS</td>
+                    <td><strong class="money" data-val="133.13">R$ 133.13</strong></td>
+                    <td style="text-align:center;">1/3</td>
+                    <td class="small-text money" data-val="399.39">-</td>
+                    <td class="small-text money" data-val="0.0">-</td>
+                    <td class="small-text money" data-val="266.26" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>INOVAR COSMETICOS ANAPOLIS</td>
+                    <td><strong class="money" data-val="12.6">R$ 12.60</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="12.6">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>BRASIL PARK PARTICIP E ANAPOLIS</td>
+                    <td><strong class="money" data-val="8.0">R$ 8.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="8.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>LANCHE DO PAULINHO Anapolis</td>
+                    <td><strong class="money" data-val="95.5">R$ 95.50</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="95.5">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>POSTO ANAPOLINO ANAPOLIS</td>
+                    <td><strong class="money" data-val="172.48">R$ 172.48</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="172.48">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>LOJA DOS AVIAMENTOS OURO VERDE DE</td>
+                    <td><strong class="money" data-val="99.4">R$ 99.40</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="99.4">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>LAVIE Anapolis</td>
+                    <td><strong class="money" data-val="66.0">R$ 66.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="66.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>DOCE PALADAR ALIMENT ANAPOLIS</td>
+                    <td><strong class="money" data-val="52.95">R$ 52.95</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="52.95">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>13/01/2026</td>
+                    <td>TeoCarParkingAdm GOIANIA</td>
+                    <td><strong class="money" data-val="10.0">R$ 10.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="10.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>13/01/2026</td>
+                    <td>TELECELL ANAPOLIS</td>
+                    <td><strong class="money" data-val="20.0">R$ 20.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="20.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>14/01/2026</td>
+                    <td>SEMPRE MAIS SUPERMERCA ABADIANIA</td>
+                    <td><strong class="money" data-val="59.23">R$ 59.23</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="59.23">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>14/01/2026</td>
+                    <td>JERIVA ABADIANIA</td>
+                    <td><strong class="money" data-val="49.52">R$ 49.52</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="49.52">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>14/01/2026</td>
+                    <td>POSTO SAO FRANCISCO EI ANAPOLIS</td>
+                    <td><strong class="money" data-val="70.0">R$ 70.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="70.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>15/01/2026</td>
+                    <td>LIVRARIA EL SHADAY  GOIANIA</td>
+                    <td><strong class="money" data-val="88.33">R$ 88.33</strong></td>
+                    <td style="text-align:center;">1/3</td>
+                    <td class="small-text money" data-val="264.99">-</td>
+                    <td class="small-text money" data-val="0.0">-</td>
+                    <td class="small-text money" data-val="176.66000000000003" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>15/01/2026</td>
+                    <td>DROGASIL 1544 ANAPOLIS</td>
+                    <td><strong class="money" data-val="50.68">R$ 50.68</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="50.68">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>15/01/2026</td>
+                    <td>LAB EVANGELICO LTDA  ANAPOLIS</td>
+                    <td><strong class="money" data-val="327.33">R$ 327.33</strong></td>
+                    <td style="text-align:center;">1/3</td>
+                    <td class="small-text money" data-val="981.99">-</td>
+                    <td class="small-text money" data-val="0.0">-</td>
+                    <td class="small-text money" data-val="654.6600000000001" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>15/01/2026</td>
+                    <td>WasleyGabriel ANAPOLIS</td>
+                    <td><strong class="money" data-val="13.0">R$ 13.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="13.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>15/01/2026</td>
+                    <td>DAMIANA GOMESMICROPIME ANAPOLIS</td>
+                    <td><strong class="money" data-val="55.0">R$ 55.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="55.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>15/01/2026</td>
+                    <td>MABIA BERNARDO HAIR ST ANAPOLIS</td>
+                    <td><strong class="money" data-val="40.0">R$ 40.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="40.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>16/01/2026</td>
+                    <td>CINEMARK BRASIL SA EC SAO PAULO</td>
+                    <td><strong class="money" data-val="141.36">R$ 141.36</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="141.36">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>16/01/2026</td>
+                    <td>FLAMBOYANT SHOPPING CE GOIANIA</td>
+                    <td><strong class="money" data-val="79.8">R$ 79.80</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="79.8">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>16/01/2026</td>
+                    <td>FLAMBOYANT ESTACIONAME GOIANIA</td>
+                    <td><strong class="money" data-val="34.4">R$ 34.40</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="34.4">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>16/01/2026</td>
+                    <td>MLPMagaluMagazine LuV Franca</td>
+                    <td><strong class="money" data-val="264.95">R$ 264.95</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="264.95">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>17/01/2026</td>
+                    <td>POSTO IMPERIAL ANAPOLIS</td>
+                    <td><strong class="money" data-val="100.0">R$ 100.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="100.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>17/01/2026</td>
+                    <td>STUDIO M  URUACU</td>
+                    <td><strong class="money" data-val="400.0">R$ 400.00</strong></td>
+                    <td style="text-align:center;">1/3</td>
+                    <td class="small-text money" data-val="1200.0">-</td>
+                    <td class="small-text money" data-val="0.0">-</td>
+                    <td class="small-text money" data-val="800.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>17/01/2026</td>
+                    <td>PANIFICADORA ARTE TRIG Campo Limpo d</td>
+                    <td><strong class="money" data-val="49.17">R$ 49.17</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="49.17">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>17/01/2026</td>
+                    <td>LIVRARIA EL SHADAY GOIANIA</td>
+                    <td><strong class="money" data-val="49.9">R$ 49.90</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="49.9">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>18/01/2026</td>
+                    <td>COSTELA DE VACA ANAPOLIS</td>
+                    <td><strong class="money" data-val="326.81">R$ 326.81</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="326.81">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>18/01/2026</td>
+                    <td>DROGASIL 2777 ANAPOLIS</td>
+                    <td><strong class="money" data-val="139.18">R$ 139.18</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="139.18">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>18/01/2026</td>
+                    <td>RIO VERMELHO ATACADO E ANAPOLIS</td>
+                    <td><strong class="money" data-val="46.29">R$ 46.29</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="46.29">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>18/01/2026</td>
+                    <td>CASA VELHA ANAPOLIS</td>
+                    <td><strong class="money" data-val="182.6">R$ 182.60</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="182.6">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>18/01/2026</td>
+                    <td>DROGARIA SAO PAULO SA ANAPOLIS</td>
+                    <td><strong class="money" data-val="37.97">R$ 37.97</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="37.97">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>19/01/2026</td>
+                    <td>MENDES P DE CONFEITARI ANAPOLIS</td>
+                    <td><strong class="money" data-val="53.65">R$ 53.65</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="53.65">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>19/01/2026</td>
+                    <td>00129 SH BRASIL PARK  ANAPOLIS</td>
+                    <td><strong class="money" data-val="236.47">R$ 236.47</strong></td>
+                    <td style="text-align:center;">1/3</td>
+                    <td class="small-text money" data-val="709.41">-</td>
+                    <td class="small-text money" data-val="0.0">-</td>
+                    <td class="small-text money" data-val="472.93999999999994" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>19/01/2026</td>
+                    <td>BRASIL PARK PARTICIP E ANAPOLIS</td>
+                    <td><strong class="money" data-val="8.0">R$ 8.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="8.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>19/01/2026</td>
+                    <td>PAYGOFARMACIA CRISTO ANAPOLIS</td>
+                    <td><strong class="money" data-val="9.9">R$ 9.90</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="9.9">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>21/01/2026</td>
+                    <td>PANIFICADORA ELDORADO ANAPOLIS</td>
+                    <td><strong class="money" data-val="89.55">R$ 89.55</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="89.55">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>21/01/2026</td>
+                    <td>MP JMORTOPEDIA  Anpolis</td>
+                    <td><strong class="money" data-val="225.0">R$ 225.00</strong></td>
+                    <td style="text-align:center;">1/2</td>
+                    <td class="small-text money" data-val="450.0">-</td>
+                    <td class="small-text money" data-val="0.0">-</td>
+                    <td class="small-text money" data-val="225.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>21/01/2026</td>
+                    <td>FULO DO CERRADO ANAPOLIS</td>
+                    <td><strong class="money" data-val="68.27">R$ 68.27</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="68.27">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>22/01/2026</td>
+                    <td>EVANDRA SILVA SALES NE ANAPOLIS</td>
+                    <td><strong class="money" data-val="44.0">R$ 44.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="44.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>22/01/2026</td>
+                    <td>WasleyGabriel ANAPOLIS</td>
+                    <td><strong class="money" data-val="17.0">R$ 17.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="17.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>22/01/2026</td>
+                    <td>CRA CLINICA RADIOLOGI  ANAPOLIS</td>
+                    <td><strong class="money" data-val="101.25">R$ 101.25</strong></td>
+                    <td style="text-align:center;">1/4</td>
+                    <td class="small-text money" data-val="405.0">-</td>
+                    <td class="small-text money" data-val="0.0">-</td>
+                    <td class="small-text money" data-val="303.75" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>22/01/2026</td>
+                    <td>ALLPARK ANAPOLIS</td>
+                    <td><strong class="money" data-val="27.0">R$ 27.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="27.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>22/01/2026</td>
+                    <td>FULO DO CERRADO ANAPOLIS</td>
+                    <td><strong class="money" data-val="178.1">R$ 178.10</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="178.1">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>23/01/2026</td>
+                    <td>DOCE SABOR ANAPOLIS</td>
+                    <td><strong class="money" data-val="139.05">R$ 139.05</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="139.05">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>23/01/2026</td>
+                    <td>AUTO POSTO CERRADO 060 ANAPOLIS</td>
+                    <td><strong class="money" data-val="100.0">R$ 100.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="100.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>23/01/2026</td>
+                    <td>JERIVA ABADIANIA</td>
+                    <td><strong class="money" data-val="31.9">R$ 31.90</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="31.9">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>23/01/2026</td>
+                    <td>DrogariaBarbosa ANAPOLIS</td>
+                    <td><strong class="money" data-val="18.0">R$ 18.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="18.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>24/01/2026</td>
+                    <td>CONCEBRA GOIANIA</td>
+                    <td><strong class="money" data-val="5.4">R$ 5.40</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="5.4">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>24/01/2026</td>
+                    <td>PAGUE MENOS 0290 MTZ</td>
+                    <td><strong class="money" data-val="19.47">R$ 19.47</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="19.47">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>24/01/2026</td>
+                    <td>GEPE COM DERIVADOS PET GOIANIA</td>
+                    <td><strong class="money" data-val="100.0">R$ 100.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="100.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>24/01/2026</td>
+                    <td>CONCEBRA GOIANIA</td>
+                    <td><strong class="money" data-val="5.4">R$ 5.40</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="5.4">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>24/01/2026</td>
+                    <td>LANCHE DO PAULINHO Anapolis</td>
+                    <td><strong class="money" data-val="83.0">R$ 83.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="83.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>25/01/2026</td>
+                    <td>COXINHAS EXPRESS ANAPOLIS</td>
+                    <td><strong class="money" data-val="19.5">R$ 19.50</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="19.5">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>25/01/2026</td>
+                    <td>BRASIL PARK PARTICIP E ANAPOLIS</td>
+                    <td><strong class="money" data-val="8.0">R$ 8.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="8.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>25/01/2026</td>
+                    <td>WasleyGabriel ANAPOLIS</td>
+                    <td><strong class="money" data-val="17.0">R$ 17.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="17.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>25/01/2026</td>
+                    <td>JIMCOM 42958161 VAN ANAPOLIS</td>
+                    <td><strong class="money" data-val="155.0">R$ 155.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="155.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>25/01/2026</td>
+                    <td>ACAITERIA MIX ANAPOLIS</td>
+                    <td><strong class="money" data-val="23.47">R$ 23.47</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="23.47">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>25/01/2026</td>
+                    <td>RIO VERMELHO ATAC E VA ANAPOLIS</td>
+                    <td><strong class="money" data-val="53.97">R$ 53.97</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="53.97">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>26/01/2026</td>
+                    <td>CRA CLINICA RADIOLOGI ANAPOLIS</td>
+                    <td><strong class="money" data-val="195.0">R$ 195.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="195.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>26/01/2026</td>
+                    <td>PANIFICADORA ARTE TRIG Anapolis</td>
+                    <td><strong class="money" data-val="65.86">R$ 65.86</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="65.86">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>26/01/2026</td>
+                    <td>ALLPARK ANAPOLIS</td>
+                    <td><strong class="money" data-val="8.0">R$ 8.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="8.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>26/01/2026</td>
+                    <td>LAB EVANGELICO LTDA  ANAPOLIS</td>
+                    <td><strong class="money" data-val="123.49">R$ 123.49</strong></td>
+                    <td style="text-align:center;">1/3</td>
+                    <td class="small-text money" data-val="370.46999999999997">-</td>
+                    <td class="small-text money" data-val="0.0">-</td>
+                    <td class="small-text money" data-val="246.97999999999996" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>26/01/2026</td>
+                    <td>ESPACO DA BELEZA ANAPOLIS</td>
+                    <td><strong class="money" data-val="18.98">R$ 18.98</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="18.98">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>26/01/2026</td>
+                    <td>ACAITERIA MIX ANAPOLIS</td>
+                    <td><strong class="money" data-val="44.19">R$ 44.19</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="44.19">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>26/01/2026</td>
+                    <td>SUBWAY Anapolis</td>
+                    <td><strong class="money" data-val="13.0">R$ 13.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="13.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>26/01/2026</td>
+                    <td>copyfacil ANAPOLIS</td>
+                    <td><strong class="money" data-val="79.75">R$ 79.75</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="79.75">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>26/01/2026</td>
+                    <td>MUNDIAL COSMETICOS ANAPOLIS</td>
+                    <td><strong class="money" data-val="29.8">R$ 29.80</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="29.8">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>26/01/2026</td>
+                    <td>TABACARIA DUARTE LTDA ANAPOLIS</td>
+                    <td><strong class="money" data-val="39.0">R$ 39.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="39.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>27/01/2026</td>
+                    <td>FULO DO CERRADO ANAPOLIS</td>
+                    <td><strong class="money" data-val="228.96">R$ 228.96</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="228.96">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>27/01/2026</td>
+                    <td>CHURRASQUINHO SKEMA 1 ANAPOLIS</td>
+                    <td><strong class="money" data-val="5.0">R$ 5.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="5.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>27/01/2026</td>
+                    <td>DrogariaModelo  ANAPOLIS</td>
+                    <td><strong class="money" data-val="593.0">R$ 593.00</strong></td>
+                    <td style="text-align:center;">1/3</td>
+                    <td class="small-text money" data-val="1779.0">-</td>
+                    <td class="small-text money" data-val="0.0">-</td>
+                    <td class="small-text money" data-val="1186.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>28/01/2026</td>
+                    <td>FOOD ITALIA AEROPORTO GUARULHOS</td>
+                    <td><strong class="money" data-val="177.0">R$ 177.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="177.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>28/01/2026</td>
+                    <td>WasleyGabriel ANAPOLIS</td>
+                    <td><strong class="money" data-val="11.0">R$ 11.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="11.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>28/01/2026</td>
+                    <td>JIMCOM PRIME EMBALA GOIANIA</td>
+                    <td><strong class="money" data-val="149.0">R$ 149.00</strong></td>
+                    <td style="text-align:center;">1/1</td>
+                    <td class="small-text money" data-val="149.0">-</td>
+                    <td class="small-text money" data-val="0">-</td>
+                    <td class="small-text money" data-val="0" style="color: #c0392b;">-</td>
+                </tr>
+        
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="month-section">
+        <div class="month-header">
+            <h2>Março 2026 (Vencimento 19/03)</h2>
+            <span class="month-total money" data-val="6362.339999999999">R$ 6,362.34</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data Compra</th>
+                    <th>Descrição</th>
+                    <th>Valor Parcela</th>
+                    <th>Parcela</th>
+                    <th>Total Compra</th>
+                    <th>Já Pago</th>
+                    <th>Restante</th>
+                </tr>
+            </thead>
+            <tbody>
+    
+                <tr>
+                    <td>02/01/2026</td>
+                    <td>USA OUTLET  SIMOLANDIA</td>
+                    <td><strong class="money" data-val="166.66">R$ 166.66</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="499.98">-</td>
+                    <td class="small-text money" data-val="333.32">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>06/01/2026</td>
+                    <td>ANDA BELLA  ANAPOLIS</td>
+                    <td><strong class="money" data-val="126.66">R$ 126.66</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="379.98">-</td>
+                    <td class="small-text money" data-val="253.32">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>06/01/2026</td>
+                    <td>ANAFLEX CALCADOS  ANAPOLIS</td>
+                    <td><strong class="money" data-val="193.25">R$ 193.25</strong></td>
+                    <td style="text-align:center;">3/4</td>
+                    <td class="small-text money" data-val="773.0">-</td>
+                    <td class="small-text money" data-val="386.5">-</td>
+                    <td class="small-text money" data-val="193.25" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>HOPE  Anapolis</td>
+                    <td><strong class="money" data-val="126.6">R$ 126.60</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="379.79999999999995">-</td>
+                    <td class="small-text money" data-val="126.6">-</td>
+                    <td class="small-text money" data-val="126.59999999999997" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>CENTRO DE TRAUMATOLOGI  ANAPOLIS</td>
+                    <td><strong class="money" data-val="340.0">R$ 340.00</strong></td>
+                    <td style="text-align:center;">2/2</td>
+                    <td class="small-text money" data-val="680.0">-</td>
+                    <td class="small-text money" data-val="340.0">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>00129 SH BRASIL PARK  ANAPOLIS</td>
+                    <td><strong class="money" data-val="133.13">R$ 133.13</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="399.39">-</td>
+                    <td class="small-text money" data-val="133.13">-</td>
+                    <td class="small-text money" data-val="133.13" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>15/01/2026</td>
+                    <td>LIVRARIA EL SHADAY  GOIANIA</td>
+                    <td><strong class="money" data-val="88.33">R$ 88.33</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="264.99">-</td>
+                    <td class="small-text money" data-val="88.33">-</td>
+                    <td class="small-text money" data-val="88.33000000000001" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>15/01/2026</td>
+                    <td>LAB EVANGELICO LTDA  ANAPOLIS</td>
+                    <td><strong class="money" data-val="327.33">R$ 327.33</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="981.99">-</td>
+                    <td class="small-text money" data-val="327.33">-</td>
+                    <td class="small-text money" data-val="327.33000000000004" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>17/01/2026</td>
+                    <td>STUDIO M  URUACU</td>
+                    <td><strong class="money" data-val="400.0">R$ 400.00</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="1200.0">-</td>
+                    <td class="small-text money" data-val="400.0">-</td>
+                    <td class="small-text money" data-val="400.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>19/01/2026</td>
+                    <td>00129 SH BRASIL PARK  ANAPOLIS</td>
+                    <td><strong class="money" data-val="236.47">R$ 236.47</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="709.41">-</td>
+                    <td class="small-text money" data-val="236.47">-</td>
+                    <td class="small-text money" data-val="236.46999999999997" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>21/01/2026</td>
+                    <td>MP JMORTOPEDIA  Anpolis</td>
+                    <td><strong class="money" data-val="225.0">R$ 225.00</strong></td>
+                    <td style="text-align:center;">2/2</td>
+                    <td class="small-text money" data-val="450.0">-</td>
+                    <td class="small-text money" data-val="225.0">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>22/01/2026</td>
+                    <td>CRA CLINICA RADIOLOGI  ANAPOLIS</td>
+                    <td><strong class="money" data-val="101.25">R$ 101.25</strong></td>
+                    <td style="text-align:center;">2/4</td>
+                    <td class="small-text money" data-val="405.0">-</td>
+                    <td class="small-text money" data-val="101.25">-</td>
+                    <td class="small-text money" data-val="202.5" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>26/01/2026</td>
+                    <td>LAB EVANGELICO LTDA  ANAPOLIS</td>
+                    <td><strong class="money" data-val="123.49">R$ 123.49</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="370.46999999999997">-</td>
+                    <td class="small-text money" data-val="123.49">-</td>
+                    <td class="small-text money" data-val="123.48999999999998" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>27/01/2026</td>
+                    <td>DrogariaModelo  ANAPOLIS</td>
+                    <td><strong class="money" data-val="593.0">R$ 593.00</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="1779.0">-</td>
+                    <td class="small-text money" data-val="593.0">-</td>
+                    <td class="small-text money" data-val="593.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>02/01/2026</td>
+                    <td>USA OUTLET  SIMOLANDIA</td>
+                    <td><strong class="money" data-val="166.66">R$ 166.66</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="499.98">-</td>
+                    <td class="small-text money" data-val="333.32">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>06/01/2026</td>
+                    <td>ANDA BELLA  ANAPOLIS</td>
+                    <td><strong class="money" data-val="126.66">R$ 126.66</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="379.98">-</td>
+                    <td class="small-text money" data-val="253.32">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>06/01/2026</td>
+                    <td>ANAFLEX CALCADOS  ANAPOLIS</td>
+                    <td><strong class="money" data-val="193.25">R$ 193.25</strong></td>
+                    <td style="text-align:center;">3/4</td>
+                    <td class="small-text money" data-val="773.0">-</td>
+                    <td class="small-text money" data-val="386.5">-</td>
+                    <td class="small-text money" data-val="193.25" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>HOPE  Anapolis</td>
+                    <td><strong class="money" data-val="126.6">R$ 126.60</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="379.79999999999995">-</td>
+                    <td class="small-text money" data-val="126.6">-</td>
+                    <td class="small-text money" data-val="126.59999999999997" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>CENTRO DE TRAUMATOLOGI  ANAPOLIS</td>
+                    <td><strong class="money" data-val="340.0">R$ 340.00</strong></td>
+                    <td style="text-align:center;">2/2</td>
+                    <td class="small-text money" data-val="680.0">-</td>
+                    <td class="small-text money" data-val="340.0">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>00129 SH BRASIL PARK  ANAPOLIS</td>
+                    <td><strong class="money" data-val="133.13">R$ 133.13</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="399.39">-</td>
+                    <td class="small-text money" data-val="133.13">-</td>
+                    <td class="small-text money" data-val="133.13" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>15/01/2026</td>
+                    <td>LIVRARIA EL SHADAY  GOIANIA</td>
+                    <td><strong class="money" data-val="88.33">R$ 88.33</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="264.99">-</td>
+                    <td class="small-text money" data-val="88.33">-</td>
+                    <td class="small-text money" data-val="88.33000000000001" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>15/01/2026</td>
+                    <td>LAB EVANGELICO LTDA  ANAPOLIS</td>
+                    <td><strong class="money" data-val="327.33">R$ 327.33</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="981.99">-</td>
+                    <td class="small-text money" data-val="327.33">-</td>
+                    <td class="small-text money" data-val="327.33000000000004" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>17/01/2026</td>
+                    <td>STUDIO M  URUACU</td>
+                    <td><strong class="money" data-val="400.0">R$ 400.00</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="1200.0">-</td>
+                    <td class="small-text money" data-val="400.0">-</td>
+                    <td class="small-text money" data-val="400.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>19/01/2026</td>
+                    <td>00129 SH BRASIL PARK  ANAPOLIS</td>
+                    <td><strong class="money" data-val="236.47">R$ 236.47</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="709.41">-</td>
+                    <td class="small-text money" data-val="236.47">-</td>
+                    <td class="small-text money" data-val="236.46999999999997" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>21/01/2026</td>
+                    <td>MP JMORTOPEDIA  Anpolis</td>
+                    <td><strong class="money" data-val="225.0">R$ 225.00</strong></td>
+                    <td style="text-align:center;">2/2</td>
+                    <td class="small-text money" data-val="450.0">-</td>
+                    <td class="small-text money" data-val="225.0">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>22/01/2026</td>
+                    <td>CRA CLINICA RADIOLOGI  ANAPOLIS</td>
+                    <td><strong class="money" data-val="101.25">R$ 101.25</strong></td>
+                    <td style="text-align:center;">2/4</td>
+                    <td class="small-text money" data-val="405.0">-</td>
+                    <td class="small-text money" data-val="101.25">-</td>
+                    <td class="small-text money" data-val="202.5" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>26/01/2026</td>
+                    <td>LAB EVANGELICO LTDA  ANAPOLIS</td>
+                    <td><strong class="money" data-val="123.49">R$ 123.49</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="370.46999999999997">-</td>
+                    <td class="small-text money" data-val="123.49">-</td>
+                    <td class="small-text money" data-val="123.48999999999998" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>27/01/2026</td>
+                    <td>DrogariaModelo  ANAPOLIS</td>
+                    <td><strong class="money" data-val="593.0">R$ 593.00</strong></td>
+                    <td style="text-align:center;">2/3</td>
+                    <td class="small-text money" data-val="1779.0">-</td>
+                    <td class="small-text money" data-val="593.0">-</td>
+                    <td class="small-text money" data-val="593.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="month-section">
+        <div class="month-header">
+            <h2>Abril 2026 (Vencimento 19/04)</h2>
+            <span class="month-total money" data-val="4645.7">R$ 4,645.70</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data Compra</th>
+                    <th>Descrição</th>
+                    <th>Valor Parcela</th>
+                    <th>Parcela</th>
+                    <th>Total Compra</th>
+                    <th>Já Pago</th>
+                    <th>Restante</th>
+                </tr>
+            </thead>
+            <tbody>
+    
+                <tr>
+                    <td>06/01/2026</td>
+                    <td>ANAFLEX CALCADOS  ANAPOLIS</td>
+                    <td><strong class="money" data-val="193.25">R$ 193.25</strong></td>
+                    <td style="text-align:center;">4/4</td>
+                    <td class="small-text money" data-val="773.0">-</td>
+                    <td class="small-text money" data-val="579.75">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>HOPE  Anapolis</td>
+                    <td><strong class="money" data-val="126.6">R$ 126.60</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="379.79999999999995">-</td>
+                    <td class="small-text money" data-val="253.2">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>00129 SH BRASIL PARK  ANAPOLIS</td>
+                    <td><strong class="money" data-val="133.13">R$ 133.13</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="399.39">-</td>
+                    <td class="small-text money" data-val="266.26">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>15/01/2026</td>
+                    <td>LIVRARIA EL SHADAY  GOIANIA</td>
+                    <td><strong class="money" data-val="88.33">R$ 88.33</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="264.99">-</td>
+                    <td class="small-text money" data-val="176.66">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>15/01/2026</td>
+                    <td>LAB EVANGELICO LTDA  ANAPOLIS</td>
+                    <td><strong class="money" data-val="327.33">R$ 327.33</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="981.99">-</td>
+                    <td class="small-text money" data-val="654.66">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>17/01/2026</td>
+                    <td>STUDIO M  URUACU</td>
+                    <td><strong class="money" data-val="400.0">R$ 400.00</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="1200.0">-</td>
+                    <td class="small-text money" data-val="800.0">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>19/01/2026</td>
+                    <td>00129 SH BRASIL PARK  ANAPOLIS</td>
+                    <td><strong class="money" data-val="236.47">R$ 236.47</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="709.41">-</td>
+                    <td class="small-text money" data-val="472.94">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>22/01/2026</td>
+                    <td>CRA CLINICA RADIOLOGI  ANAPOLIS</td>
+                    <td><strong class="money" data-val="101.25">R$ 101.25</strong></td>
+                    <td style="text-align:center;">3/4</td>
+                    <td class="small-text money" data-val="405.0">-</td>
+                    <td class="small-text money" data-val="202.5">-</td>
+                    <td class="small-text money" data-val="101.25" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>26/01/2026</td>
+                    <td>LAB EVANGELICO LTDA  ANAPOLIS</td>
+                    <td><strong class="money" data-val="123.49">R$ 123.49</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="370.46999999999997">-</td>
+                    <td class="small-text money" data-val="246.98">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>27/01/2026</td>
+                    <td>DrogariaModelo  ANAPOLIS</td>
+                    <td><strong class="money" data-val="593.0">R$ 593.00</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="1779.0">-</td>
+                    <td class="small-text money" data-val="1186.0">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>06/01/2026</td>
+                    <td>ANAFLEX CALCADOS  ANAPOLIS</td>
+                    <td><strong class="money" data-val="193.25">R$ 193.25</strong></td>
+                    <td style="text-align:center;">4/4</td>
+                    <td class="small-text money" data-val="773.0">-</td>
+                    <td class="small-text money" data-val="579.75">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>09/01/2026</td>
+                    <td>HOPE  Anapolis</td>
+                    <td><strong class="money" data-val="126.6">R$ 126.60</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="379.79999999999995">-</td>
+                    <td class="small-text money" data-val="253.2">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>12/01/2026</td>
+                    <td>00129 SH BRASIL PARK  ANAPOLIS</td>
+                    <td><strong class="money" data-val="133.13">R$ 133.13</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="399.39">-</td>
+                    <td class="small-text money" data-val="266.26">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>15/01/2026</td>
+                    <td>LIVRARIA EL SHADAY  GOIANIA</td>
+                    <td><strong class="money" data-val="88.33">R$ 88.33</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="264.99">-</td>
+                    <td class="small-text money" data-val="176.66">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>15/01/2026</td>
+                    <td>LAB EVANGELICO LTDA  ANAPOLIS</td>
+                    <td><strong class="money" data-val="327.33">R$ 327.33</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="981.99">-</td>
+                    <td class="small-text money" data-val="654.66">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>17/01/2026</td>
+                    <td>STUDIO M  URUACU</td>
+                    <td><strong class="money" data-val="400.0">R$ 400.00</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="1200.0">-</td>
+                    <td class="small-text money" data-val="800.0">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>19/01/2026</td>
+                    <td>00129 SH BRASIL PARK  ANAPOLIS</td>
+                    <td><strong class="money" data-val="236.47">R$ 236.47</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="709.41">-</td>
+                    <td class="small-text money" data-val="472.94">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>22/01/2026</td>
+                    <td>CRA CLINICA RADIOLOGI  ANAPOLIS</td>
+                    <td><strong class="money" data-val="101.25">R$ 101.25</strong></td>
+                    <td style="text-align:center;">3/4</td>
+                    <td class="small-text money" data-val="405.0">-</td>
+                    <td class="small-text money" data-val="202.5">-</td>
+                    <td class="small-text money" data-val="101.25" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>26/01/2026</td>
+                    <td>LAB EVANGELICO LTDA  ANAPOLIS</td>
+                    <td><strong class="money" data-val="123.49">R$ 123.49</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="370.46999999999997">-</td>
+                    <td class="small-text money" data-val="246.98">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>27/01/2026</td>
+                    <td>DrogariaModelo  ANAPOLIS</td>
+                    <td><strong class="money" data-val="593.0">R$ 593.00</strong></td>
+                    <td style="text-align:center;">3/3</td>
+                    <td class="small-text money" data-val="1779.0">-</td>
+                    <td class="small-text money" data-val="1186.0">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="month-section">
+        <div class="month-header">
+            <h2>Maio 2026 (Vencimento 19/05)</h2>
+            <span class="month-total money" data-val="202.5">R$ 202.50</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data Compra</th>
+                    <th>Descrição</th>
+                    <th>Valor Parcela</th>
+                    <th>Parcela</th>
+                    <th>Total Compra</th>
+                    <th>Já Pago</th>
+                    <th>Restante</th>
+                </tr>
+            </thead>
+            <tbody>
+    
+                <tr>
+                    <td>22/01/2026</td>
+                    <td>CRA CLINICA RADIOLOGI  ANAPOLIS</td>
+                    <td><strong class="money" data-val="101.25">R$ 101.25</strong></td>
+                    <td style="text-align:center;">4/4</td>
+                    <td class="small-text money" data-val="405.0">-</td>
+                    <td class="small-text money" data-val="303.75">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+                <tr>
+                    <td>22/01/2026</td>
+                    <td>CRA CLINICA RADIOLOGI  ANAPOLIS</td>
+                    <td><strong class="money" data-val="101.25">R$ 101.25</strong></td>
+                    <td style="text-align:center;">4/4</td>
+                    <td class="small-text money" data-val="405.0">-</td>
+                    <td class="small-text money" data-val="303.75">-</td>
+                    <td class="small-text money" data-val="0.0" style="color: #c0392b;">-</td>
+                </tr>
+        
+            </tbody>
+        </table>
+    </div>
+    
+</div>
+
+<script>
+    let currentCurrency = localStorage.getItem('currency') || 'BRL';
+    let exchangeRate = parseFloat(localStorage.getItem('exchangeRate')) || 4.20;
+
+    document.getElementById('exchange-rate').value = exchangeRate;
+    updateButtonLabel();
+    updatePrices();
+
+    function updateRate() {
+        exchangeRate = parseFloat(document.getElementById('exchange-rate').value);
+        localStorage.setItem('exchangeRate', exchangeRate);
+        updatePrices();
+    }
+
+    function toggleCurrency() {
+        currentCurrency = currentCurrency === 'BRL' ? 'CAD' : 'BRL';
+        localStorage.setItem('currency', currentCurrency);
+        updateButtonLabel();
+        updatePrices();
+    }
+
+    function updateButtonLabel() {
+        const btn = document.getElementById('btn-currency');
+        btn.textContent = currentCurrency === 'BRL' ? 'Ver em CAD' : 'Ver em BRL';
+    }
+
+    function formatCurrency(value) {
+        if (currentCurrency === 'CAD') {
+            return (value / exchangeRate).toLocaleString('en-CA', { style: 'currency', currency: 'CAD' });
+        }
+        return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+    
+    function updatePrices() {
+        const elements = document.querySelectorAll('.money');
+        elements.forEach(el => {
+            const val = parseFloat(el.getAttribute('data-val'));
+            el.textContent = formatCurrency(val);
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -1,7 +1,6 @@
 # Ignore sensitive data
 *.pdf
 *.txt
-*.html
 
 # Python
 __pycache__/
