@@ -20,3 +20,10 @@
 
 ### Observações
 - O extrato de cartão de crédito atual só cobre gastos até 08/01. Gastos posteriores a essa data (até o fim da viagem em 28/01) ainda não foram importados pois o arquivo correspondente não estava disponível.
+
+### Infraestrutura
+- **GitHub**: Repositório configurado e enviado para `https://github.com/igorgomides/relatoriodegastosdeferias`.
+- **Deploy**: Configurado para deploy na Vercel.
+  - Arquivos HTML incluídos no controle de versão.
+  - Adicionado `index.html` para redirecionamento automático.
+- **Servidor Local**: Adicionado suporte para visualização via `python http.server`.

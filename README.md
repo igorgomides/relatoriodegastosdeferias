@@ -21,8 +21,23 @@ Este projeto automatiza a consolidação de gastos de viagem (Pix, Débito e Cr�
     ```bash
     python3 parse_expenses.py
     ```
+    ```
 3.  **Visualizar**:
-    Abra o arquivo `relatorio_viagem.html` no seu navegador.
+    *   **Opção A (Simples)**: Abra o arquivo `relatorio_viagem.html` no seu navegador.
+    *   **Opção B (Servidor Local)**:
+        Execute:
+        ```bash
+        python3 -m http.server 8000
+        ```
+        Acesse: `http://localhost:8000`
+
+## Deploy (Vercel)
+
+O projeto está configurado para deploy estático na Vercel.
+
+1.  O repositório inclui os arquivos HTML gerados.
+2.  O arquivo `index.html` redireciona automaticamente para o relatório principal.
+3.  Basta conectar o repositório GitHub na Vercel e o deploy será automático.
 
 ## Lógica de Processamento
 
