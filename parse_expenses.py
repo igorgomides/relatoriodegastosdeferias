@@ -344,6 +344,7 @@ html_content = f"""
         <h1>Gastos da Viagem</h1>
         <div style="display:flex; gap:10px;">
             <a href="relatorio_poupanca.html" class="btn" style="background-color:#c0392b;">Minhas Poupanças</a>
+            <a href="relatorio_contas_fixas.html" class="btn" style="background-color:#8e44ad;">Contas Fixas</a>
             <a href="relatorio_futuro.html" class="btn">Ver Detalhes Futuros</a>
         </div>
     </div>

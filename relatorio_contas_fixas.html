@@ -1,0 +1,297 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contas Fixas e Previsões</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h1 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #3498db; text-decoration: none; font-weight: bold; }
+        .back-link:hover { text-decoration: underline; }
+        
+        .bill-card { background: #fff; border: 1px solid #e1e4e8; border-radius: 8px; margin-bottom: 15px; padding: 20px; display: flex; align-items: center; justify-content: space-between; transition: transform 0.2s; }
+        .bill-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-color: #3498db; }
+        
+        .bill-info { flex: 1; }
+        .bill-name { font-size: 1.2em; font-weight: bold; color: #2c3e50; margin: 0; }
+        .bill-freq { font-size: 0.85em; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.5px; background: #eee; padding: 2px 6px; border-radius: 4px; }
+        
+        .bill-dates { text-align: right; min-width: 150px; }
+        .next-label { font-size: 0.8em; color: #95a5a6; display: block; }
+        .next-date { font-size: 1.4em; font-weight: bold; color: #e74c3c; }
+        .amount { font-size: 1.1em; color: #27ae60; font-weight: 600; margin-top: 4px; display: block; }
+        
+        .history-btn { background: none; border: none; color: #3498db; cursor: pointer; padding: 0; font-size: 0.9em; margin-top: 5px; }
+        .history-list { display: none; margin-top: 15px; background: #f9f9f9; padding: 10px; border-radius: 6px; width: 100%; font-size: 0.9em; }
+        .history-item { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 4px 0; }
+        
+        .badge-bi { background-color: #e8f4fd; color: #2980b9; }
+        .badge-mo { background-color: #fef9e7; color: #f39c12; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="relatorio_viagem.html" class="back-link">&larr; Voltar para Dashboard</a>
+        <h1>📅 Previsão de Contas Fixas</h1>
+        <p style="color: #666; margin-bottom: 25px;">Estimativas baseadas no histórico de Dez/25 a Fev/26.</p>
+
+
+        <div class="bill-card">
+            <div class="bill-info">
+                <p class="bill-name">Hyundai Application <span class="bill-freq badge-bi">Bi-weekly</span></p>
+                <p style="margin: 5px 0 0; color: #666; font-size: 0.9em;">
+                    Último pgto: 22/01/2026 (R$ 298.61)
+                </p>
+                <button class="history-btn" onclick="document.getElementById('hist-HyundaiApplication').style.display = document.getElementById('hist-HyundaiApplication').style.display === 'block' ? 'none' : 'block'">
+                    Ver Histórico (4) &#9662;
+                </button>
+                <div id="hist-HyundaiApplication" class="history-list">
+    
+                    <div class="history-item">
+                        <span>22/01/2026</span>
+                        <span>R$ 298.61</span>
+                    </div>
+        
+                    <div class="history-item">
+                        <span>08/01/2026</span>
+                        <span>R$ 298.61</span>
+                    </div>
+        
+                    <div class="history-item">
+                        <span>29/12/2025</span>
+                        <span>R$ 298.61</span>
+                    </div>
+        
+                    <div class="history-item">
+                        <span>11/12/2025</span>
+                        <span>R$ 298.61</span>
+                    </div>
+        
+                </div>
+            </div>
+            <div class="bill-dates">
+                <span class="next-label">Próximo Vencimento</span>
+                <span class="next-date" style="color: #e74c3c">05/02</span>
+                <span class="next-label" style="font-size:0.7em; margin-top:2px;">(3 dias)</span>
+                <span class="amount">~R$ 298.61</span>
+            </div>
+        </div>
+    
+        <div class="bill-card">
+            <div class="bill-info">
+                <p class="bill-name">AMEX Payment <span class="bill-freq badge-mo">Monthly</span></p>
+                <p style="margin: 5px 0 0; color: #666; font-size: 0.9em;">
+                    Último pgto: 05/01/2026 (R$ 261.20)
+                </p>
+                <button class="history-btn" onclick="document.getElementById('hist-AMEXPayment').style.display = document.getElementById('hist-AMEXPayment').style.display === 'block' ? 'none' : 'block'">
+                    Ver Histórico (2) &#9662;
+                </button>
+                <div id="hist-AMEXPayment" class="history-list">
+    
+                    <div class="history-item">
+                        <span>05/01/2026</span>
+                        <span>R$ 261.20</span>
+                    </div>
+        
+                    <div class="history-item">
+                        <span>05/12/2025</span>
+                        <span>R$ 500.00</span>
+                    </div>
+        
+                </div>
+            </div>
+            <div class="bill-dates">
+                <span class="next-label">Próximo Vencimento</span>
+                <span class="next-date" style="color: #e74c3c">05/02</span>
+                <span class="next-label" style="font-size:0.7em; margin-top:2px;">(3 dias)</span>
+                <span class="amount">~R$ 380.60</span>
+            </div>
+        </div>
+    
+        <div class="bill-card">
+            <div class="bill-info">
+                <p class="bill-name">RBC Loan <span class="bill-freq badge-bi">Bi-weekly</span></p>
+                <p style="margin: 5px 0 0; color: #666; font-size: 0.9em;">
+                    Último pgto: 27/01/2026 (R$ 169.95)
+                </p>
+                <button class="history-btn" onclick="document.getElementById('hist-RBCLoan').style.display = document.getElementById('hist-RBCLoan').style.display === 'block' ? 'none' : 'block'">
+                    Ver Histórico (5) &#9662;
+                </button>
+                <div id="hist-RBCLoan" class="history-list">
+    
+                    <div class="history-item">
+                        <span>27/01/2026</span>
+                        <span>R$ 169.95</span>
+                    </div>
+        
+                    <div class="history-item">
+                        <span>13/01/2026</span>
+                        <span>R$ 169.95</span>
+                    </div>
+        
+                    <div class="history-item">
+                        <span>30/12/2025</span>
+                        <span>R$ 169.95</span>
+                    </div>
+        
+                    <div class="history-item">
+                        <span>16/12/2025</span>
+                        <span>R$ 169.95</span>
+                    </div>
+        
+                    <div class="history-item">
+                        <span>02/12/2025</span>
+                        <span>R$ 169.95</span>
+                    </div>
+        
+                </div>
+            </div>
+            <div class="bill-dates">
+                <span class="next-label">Próximo Vencimento</span>
+                <span class="next-date" style="color: #2c3e50">10/02</span>
+                <span class="next-label" style="font-size:0.7em; margin-top:2px;">(8 dias)</span>
+                <span class="amount">~R$ 169.95</span>
+            </div>
+        </div>
+    
+        <div class="bill-card">
+            <div class="bill-info">
+                <p class="bill-name">Economical Insurance <span class="bill-freq badge-mo">Monthly</span></p>
+                <p style="margin: 5px 0 0; color: #666; font-size: 0.9em;">
+                    Último pgto: 12/01/2026 (R$ 528.16)
+                </p>
+                <button class="history-btn" onclick="document.getElementById('hist-EconomicalInsurance').style.display = document.getElementById('hist-EconomicalInsurance').style.display === 'block' ? 'none' : 'block'">
+                    Ver Histórico (4) &#9662;
+                </button>
+                <div id="hist-EconomicalInsurance" class="history-list">
+    
+                    <div class="history-item">
+                        <span>12/01/2026</span>
+                        <span>R$ 528.16</span>
+                    </div>
+        
+                    <div class="history-item">
+                        <span>02/01/2026</span>
+                        <span>R$ 56.97</span>
+                    </div>
+        
+                    <div class="history-item">
+                        <span>10/12/2025</span>
+                        <span>R$ 560.13</span>
+                    </div>
+        
+                    <div class="history-item">
+                        <span>01/12/2025</span>
+                        <span>R$ 56.97</span>
+                    </div>
+        
+                </div>
+            </div>
+            <div class="bill-dates">
+                <span class="next-label">Próximo Vencimento</span>
+                <span class="next-date" style="color: #2c3e50">12/02</span>
+                <span class="next-label" style="font-size:0.7em; margin-top:2px;">(10 dias)</span>
+                <span class="amount">~R$ 300.56</span>
+            </div>
+        </div>
+    
+        <div class="bill-card">
+            <div class="bill-info">
+                <p class="bill-name">Long & McQuade <span class="bill-freq badge-mo">Monthly</span></p>
+                <p style="margin: 5px 0 0; color: #666; font-size: 0.9em;">
+                    Último pgto: 12/01/2026 (R$ 50.61)
+                </p>
+                <button class="history-btn" onclick="document.getElementById('hist-Long&McQuade').style.display = document.getElementById('hist-Long&McQuade').style.display === 'block' ? 'none' : 'block'">
+                    Ver Histórico (2) &#9662;
+                </button>
+                <div id="hist-Long&McQuade" class="history-list">
+    
+                    <div class="history-item">
+                        <span>12/01/2026</span>
+                        <span>R$ 50.61</span>
+                    </div>
+        
+                    <div class="history-item">
+                        <span>10/12/2025</span>
+                        <span>R$ 50.61</span>
+                    </div>
+        
+                </div>
+            </div>
+            <div class="bill-dates">
+                <span class="next-label">Próximo Vencimento</span>
+                <span class="next-date" style="color: #2c3e50">12/02</span>
+                <span class="next-label" style="font-size:0.7em; margin-top:2px;">(10 dias)</span>
+                <span class="amount">~R$ 50.61</span>
+            </div>
+        </div>
+    
+        <div class="bill-card">
+            <div class="bill-info">
+                <p class="bill-name">Kitchener Hydro <span class="bill-freq badge-mo">Monthly</span></p>
+                <p style="margin: 5px 0 0; color: #666; font-size: 0.9em;">
+                    Último pgto: 16/01/2026 (R$ 140.48)
+                </p>
+                <button class="history-btn" onclick="document.getElementById('hist-KitchenerHydro').style.display = document.getElementById('hist-KitchenerHydro').style.display === 'block' ? 'none' : 'block'">
+                    Ver Histórico (2) &#9662;
+                </button>
+                <div id="hist-KitchenerHydro" class="history-list">
+    
+                    <div class="history-item">
+                        <span>16/01/2026</span>
+                        <span>R$ 140.48</span>
+                    </div>
+        
+                    <div class="history-item">
+                        <span>17/12/2025</span>
+                        <span>R$ 129.68</span>
+                    </div>
+        
+                </div>
+            </div>
+            <div class="bill-dates">
+                <span class="next-label">Próximo Vencimento</span>
+                <span class="next-date" style="color: #2c3e50">16/02</span>
+                <span class="next-label" style="font-size:0.7em; margin-top:2px;">(14 dias)</span>
+                <span class="amount">~R$ 135.08</span>
+            </div>
+        </div>
+    
+        <div class="bill-card">
+            <div class="bill-info">
+                <p class="bill-name">Kitchener Water/Gas <span class="bill-freq badge-mo">Monthly</span></p>
+                <p style="margin: 5px 0 0; color: #666; font-size: 0.9em;">
+                    Último pgto: 23/01/2026 (R$ 264.89)
+                </p>
+                <button class="history-btn" onclick="document.getElementById('hist-KitchenerWater/Gas').style.display = document.getElementById('hist-KitchenerWater/Gas').style.display === 'block' ? 'none' : 'block'">
+                    Ver Histórico (2) &#9662;
+                </button>
+                <div id="hist-KitchenerWater/Gas" class="history-list">
+    
+                    <div class="history-item">
+                        <span>23/01/2026</span>
+                        <span>R$ 264.89</span>
+                    </div>
+        
+                    <div class="history-item">
+                        <span>22/12/2025</span>
+                        <span>R$ 224.45</span>
+                    </div>
+        
+                </div>
+            </div>
+            <div class="bill-dates">
+                <span class="next-label">Próximo Vencimento</span>
+                <span class="next-date" style="color: #2c3e50">23/02</span>
+                <span class="next-label" style="font-size:0.7em; margin-top:2px;">(21 dias)</span>
+                <span class="amount">~R$ 244.67</span>
+            </div>
+        </div>
+    
+    </div>
+</body>
+</html>
